@@ -1,30 +1,24 @@
-package org.eoisaac.models;
-
+package org.eoisaac.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.UuidGenerator;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
-import java.util.UUID;
-
 
 @Entity
 @Table(name = "transactions")
 @Getter
 @Setter
-public class TransactionModel {
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
-
+@SuperBuilder
+public class Transaction extends Base {
     @Column(name = "name")
     private String name;
 
     @Column(name = "type")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
 
     @Column(name = "value")
     private Float value;
@@ -32,4 +26,7 @@ public class TransactionModel {
     @Column(name = "entry_date")
     private Instant entryDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

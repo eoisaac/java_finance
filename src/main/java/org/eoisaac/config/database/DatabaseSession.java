@@ -1,4 +1,4 @@
-package org.eoisaac.database;
+package org.eoisaac.config.database;
 
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;
@@ -11,8 +11,6 @@ public class DatabaseSession {
 
     private static SessionFactory buildSessionFactory() {
         try {
-//            DatabaseProperties databaseProperties = new DatabaseProperties();
-//            Configuration configuration = new Configuration().addProperties(databaseProperties.getProperties());
             Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
             return configuration.buildSessionFactory();
         } catch (Throwable e) {
