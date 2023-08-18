@@ -11,8 +11,9 @@ public class DatabaseSession {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            DatabaseProperties databaseProperties = new DatabaseProperties();
-            Configuration configuration = new Configuration().addProperties(databaseProperties.getProperties());
+//            DatabaseProperties databaseProperties = new DatabaseProperties();
+//            Configuration configuration = new Configuration().addProperties(databaseProperties.getProperties());
+            Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
             return configuration.buildSessionFactory();
         } catch (Throwable e) {
             System.err.println("Initial SessionFactory creation failed: " + e);
