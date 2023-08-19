@@ -1,44 +1,36 @@
 package org.eoisaac;
 
-import org.eoisaac.config.database.DatabaseSession;
-import org.eoisaac.model.Transaction;
-import org.eoisaac.model.TransactionType;
-import org.eoisaac.views.AppFrame;
-import org.hibernate.Session;
-
 import java.time.Instant;
+import java.util.Optional;
+import org.eoisaac.dao.TransactionDao;
+import org.eoisaac.entities.TransactionEntity;
+import org.eoisaac.entities.TransactionType;
 
 public class Main {
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        try {
-            Session session = DatabaseSession.get();
-            try {
-                if (session != null) {
-                    System.out.println(session.isConnected());
+    TransactionDao transactionDao = new TransactionDao();
 
-                    // Create a new transaction using the builder
-                    Transaction newTransaction = Transaction.builder()
-                            .name("Sample Transaction")
-                            .type(TransactionType.EXPENSE)
-                            .value(100.0f)
-                            .entryDate(Instant.now())
-                            .build();
+    TransactionEntity newTransaction =
+        TransactionEntity.builder()
+            .name("Sample Transaction 2")
+            .type(TransactionType.EXPENSE)
+            .value(100.0f)
+            .entryDate(Instant.now())
+            .build();
 
-                    session.beginTransaction();
-                    session.save(newTransaction);
-                    session.getTransaction().commit();
-
-                    AppFrame appFrame = new AppFrame();
-                    appFrame.setVisible(true);
-                } else {
-                    System.out.println("Session not created");
-                }
-            } finally {
-                DatabaseSession.close(session);
-            }
-        } finally {
-            DatabaseSession.closeSessionFactory();
-        }
+    Optional<TransactionEntity> created = transactionDao.create(newTransaction);
+    if (created.isPresent()) {
+      TransactionEntity createdTransaction = created.get();
+      createdTransaction.setName("Updated Transaction Name");
+      TransactionEntity updatedTransaction = transactionDao.update(createdTransaction);
+      if (updatedTransaction != null) {
+        System.out.println("Transaction updated successfully: " + updatedTransaction);
+      } else {
+        System.out.println("Failed to update transaction.");
+      }
+    } else {
+      System.out.println("Failed to create transaction.");
     }
+  }
 }

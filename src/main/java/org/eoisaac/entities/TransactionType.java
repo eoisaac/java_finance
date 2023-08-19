@@ -1,4 +1,4 @@
-package org.eoisaac.model;
+package org.eoisaac.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,5 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TransactionType {
-    INCOME, EXPENSE
+  INCOME,
+  EXPENSE
 }
