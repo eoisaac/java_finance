@@ -640,7 +640,7 @@ public class AppFrame extends JFrame {
                 transaction.getType(), // Sets the transaction type
                 transaction.getName(), // Sets the transaction name
                 transaction.getCategory().getName(), // Sets the transaction category name
-                CurrencyUtils.formatCurrency(transaction.getValue()), // Sets the transaction value
+                CurrencyUtils.formatCurrency(transaction.getPrice()), // Sets the transaction value
                 DateUtils.convertInstantToString(
                     transaction.getEntryDate()), // Sets the transaction entry date
                 DateUtils.convertInstantToString(

@@ -11,22 +11,26 @@
 
 <hibernate-configuration>
     <session-factory>
-        <!-- Database connection settings -->
+        <!-- # Database connection settings -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/java_finance_db</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">postgres</property>
-        <!-- SQL dialect -->
-        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-        <!-- Enable Hibernate's automatic session context management -->
-<!--          <property name="hibernate.hbm2ddl.auto">create</property>-->
-        <!-- Echo all executed SQL to stdout -->
-<!--        <property name="hibernate.show_sql">true</property>-->
-<!--        <property name="hibernate.format_sql">true</property>-->
-        <!-- Populate database with initial data on startup -->
-<!--        <property name="hibernate.hbm2ddl.import_files">data/seed.sql</property>-->
 
-        <!-- Names the annotated entity class -->
+        <!-- # SQL dialect -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- # Enable Hibernate's automatic session context management -->
+        <property name="hibernate.hbm2ddl.auto">create</property>
+
+        <!-- # Echo all executed SQL to stdout -->
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- # Populate database with initial data on startup -->
+        <property name="hibernate.hbm2ddl.import_files">data/seed.sql</property>
+
+        <!-- # Names the annotated entity class -->
         <mapping class="org.eoisaac.model.entities.TransactionEntity"/>
         <mapping class="org.eoisaac.model.entities.CategoryEntity"/>
     </session-factory>

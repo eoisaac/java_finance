@@ -21,7 +21,7 @@ public class TransactionUtils { // Utility class for transaction calculations
   private static float calculateTotalPriceByType(List<TransactionEntity> transactions, TransactionType type) { // Calculates the total price of a transaction type
     return transactions.stream() // Returns the total price of a transaction type
             .filter(transaction -> transaction.getType() == type) // Filters the transactions by type
-            .map(TransactionEntity::getValue) // Maps the transactions to their price
+            .map(TransactionEntity::getPrice) // Maps the transactions to their price
             .reduce(0.0f, Float::sum); // Sums the prices
   }
 

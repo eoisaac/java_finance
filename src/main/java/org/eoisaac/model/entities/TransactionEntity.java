@@ -17,11 +17,11 @@ public class TransactionEntity extends BaseEntity { // Extends the BaseEntity cl
   private String name;
 
   @Column(name = "type") // Sets the name of the column
-  @Enumerated(EnumType.STRING) // Sets the column to be an enumerated type
+  @Enumerated(EnumType.STRING) // Sets the column to be an enumerated type (EXPENSE or INCOME
   private TransactionType type;
 
-  @Column(name = "value") // Sets the name of the column
-  private Float value;
+  @Column(name = "price") // Sets the name of the column
+  private Float price;
 
   @Column(name = "entry_date") // Sets the name of the column
   private Instant entryDate;

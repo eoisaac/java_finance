@@ -27,7 +27,7 @@ public class TransactionController {
         TransactionEntity.builder()
             .name(name)
             .type(type)
-            .value(value)
+            .price(value)
             .entryDate(entryDate)
             .category(category)
             .build();
