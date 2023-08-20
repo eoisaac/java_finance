@@ -36,6 +36,10 @@ public class AppFrame extends JFrame {
   private TransactionSummary transactionSummary;
   private boolean hasTransactions = false;
 
+  private UUID selectedTransactionId;
+
+  private JLabel confirmDialogMessage;
+
   private JButton createTransactionButton;
   private JComboBox<String> transactionCategoryComboBox;
   private JFormattedTextField transactionEntryDateField;
@@ -57,7 +61,7 @@ public class AppFrame extends JFrame {
   private JPanel mainPanel;
   private JPanel transactionFormPanel;
   private JScrollPane transactionsTablePanel;
-  private JSeparator jSeparator1;
+  private JSeparator separator;
   private JTextField transactionNameField;
   private JLabel totalIncome;
   private JTextField transactionPriceField;
@@ -122,6 +126,8 @@ public class AppFrame extends JFrame {
     mainPanel = new JPanel();
     transactionFormPanel = new JPanel();
 
+    confirmDialogMessage = new JLabel();
+
     frameTitle = new JLabel();
 
     transactionNameLabel = new JLabel();
@@ -141,7 +147,7 @@ public class AppFrame extends JFrame {
 
     createTransactionButton = new JButton();
 
-    jSeparator1 = new JSeparator();
+    separator = new JSeparator();
     transactionsTablePanel = new JScrollPane();
     transactionsTable = new JTable();
 
@@ -158,6 +164,9 @@ public class AppFrame extends JFrame {
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     mainPanel.setBackground(new Color(255, 255, 255));
+
+    confirmDialogMessage.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    confirmDialogMessage.setText("Deseja realmente excluir a transação?");
 
     transactionFormPanel.setBackground(new Color(204, 204, 255));
     transactionFormPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
@@ -217,7 +226,10 @@ public class AppFrame extends JFrame {
     createTransactionButton.setFont(new Font("Segoe UI", Font.PLAIN, 24)); // NOI18N
     createTransactionButton.setText("CADASTRAR");
 
+    deleteTransactionButton.setEnabled(false);
+
     createTransactionButton.addActionListener(this::handleNewTransactionFormSubmit);
+    deleteTransactionButton.addActionListener(this::handleDisplayConfirmDialog);
 
     GroupLayout transactionFormGroupLayout = new GroupLayout(transactionFormPanel);
     transactionFormPanel.setLayout(transactionFormGroupLayout);
@@ -266,7 +278,7 @@ public class AppFrame extends JFrame {
                                         GroupLayout.PREFERRED_SIZE)
                                     .addGap(4, 4, 4)))
                     .addContainerGap())
-            .addComponent(jSeparator1)
+            .addComponent(separator)
             .addGroup(
                 GroupLayout.Alignment.TRAILING,
                 transactionFormGroupLayout
@@ -318,7 +330,7 @@ public class AppFrame extends JFrame {
                         GroupLayout.PREFERRED_SIZE)
                     .addGap(42, 42, 42)
                     .addComponent(
-                        jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                        separator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                     .addGap(28, 28, 28)
                     .addGroup(
                         transactionFormGroupLayout
@@ -483,13 +495,16 @@ public class AppFrame extends JFrame {
   }
 
   private void deleteTransaction(UUID transactionId) {
-    transactionController.deleteTransaction(transactionId);
-    updateTransactionsData();
+    boolean deleted = transactionController.deleteTransaction(transactionId);
+    if (deleted) {
+      selectedTransactionId = null;
+      deleteTransactionButton.setEnabled(false);
+      updateTransactionsData();
+    }
   }
 
   private void updateTransactionsData() {
     transactions = transactionController.getAllTransactions(); // or use local variable as cache
-
     hasTransactions = !transactions.isEmpty();
 
     renderTransactionsTable();
@@ -536,8 +551,26 @@ public class AppFrame extends JFrame {
     int selectedRow = transactionsTable.getSelectedRow();
     DefaultTableModel tableModel = (DefaultTableModel) transactionsTable.getModel();
     UUID selectedTransactionId = (UUID) tableModel.getValueAt(selectedRow, 0);
+    this.selectedTransactionId = selectedTransactionId;
 
-    deleteTransaction(selectedTransactionId);
+    deleteTransactionButton.setEnabled(true);
+  }
+
+  private void handleDisplayConfirmDialog(ActionEvent actionEvent) {
+    int result =
+        JOptionPane.showOptionDialog(
+            this,
+            confirmDialogMessage,
+            "Excluir transação",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            new Object[] {"Sim", "Não"},
+            "No");
+
+    if (result == JOptionPane.YES_OPTION) {
+      deleteTransaction(selectedTransactionId);
+    }
   }
 
   public void renderTransactionsSummary() {
@@ -551,9 +584,9 @@ public class AppFrame extends JFrame {
     DefaultTableModel tableModel = (DefaultTableModel) transactionsTable.getModel();
     tableModel.setRowCount(0);
 
-    List<String> hiddenColumnIndexes = List.of("ID", "Tipo");
+    List<String> hiddenColumnNames = List.of("ID", "Tipo");
     transactionsTable.setDefaultRenderer(
-        Object.class, new TransactionTableRowRenderer(hiddenColumnIndexes));
+        Object.class, new TransactionTableRowRenderer(hiddenColumnNames));
 
     transactions.forEach(
         transaction -> {

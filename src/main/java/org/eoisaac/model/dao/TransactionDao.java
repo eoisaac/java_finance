@@ -42,7 +42,7 @@ public class TransactionDao {
     }
   }
 
-  public Boolean delete(UUID id) {
+  public boolean delete(UUID id) {
     Session session = null;
     try {
       session = DatabaseSession.get();

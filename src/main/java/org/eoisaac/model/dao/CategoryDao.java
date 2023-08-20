@@ -42,7 +42,7 @@ public class CategoryDao {
     }
   }
 
-  public Boolean delete(CategoryEntity entity) {
+  public boolean delete(CategoryEntity entity) {
     Session session = null;
     try {
       session = DatabaseSession.get();

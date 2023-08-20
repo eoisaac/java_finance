@@ -30,7 +30,7 @@ public class TransactionController {
     return transactionDao.create(newTransaction);
   }
 
-  public Boolean deleteTransaction(UUID id) {
+  public boolean deleteTransaction(UUID id) {
     return transactionDao.delete(id);
   }
 
