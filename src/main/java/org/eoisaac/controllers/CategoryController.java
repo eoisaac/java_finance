@@ -4,6 +4,7 @@ import org.eoisaac.model.dao.CategoryDao;
 import org.eoisaac.model.entities.CategoryEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CategoryController {
 
@@ -13,9 +14,9 @@ public class CategoryController {
     categoryDao = new CategoryDao();
   }
 
-  public CategoryEntity createCategory(String name) {
+  public Optional<CategoryEntity> createCategory(String name) {
     CategoryEntity newCategory = CategoryEntity.builder().name(name).build();
-    return categoryDao.create(newCategory).orElse(null);
+    return categoryDao.create(newCategory);
   }
 
   public List<CategoryEntity> getAllCategories() {

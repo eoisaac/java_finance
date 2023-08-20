@@ -1,6 +1,8 @@
 package org.eoisaac.controllers;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 import org.eoisaac.model.dao.TransactionDao;
 import org.eoisaac.model.entities.CategoryEntity;
@@ -14,7 +16,7 @@ public class TransactionController {
     transactionDao = new TransactionDao();
   }
 
-  public TransactionEntity createTransaction(
+  public Optional<TransactionEntity> createTransaction(
       String name, TransactionType type, float value, Instant entryDate, CategoryEntity category) {
     TransactionEntity newTransaction =
         TransactionEntity.builder()
@@ -24,7 +26,10 @@ public class TransactionController {
             .entryDate(entryDate)
             .category(category)
             .build();
+    return transactionDao.create(newTransaction);
+  }
 
-    return transactionDao.create(newTransaction).orElse(null);
+  public List<TransactionEntity> getAllTransactions() {
+    return transactionDao.getAll();
   }
 }

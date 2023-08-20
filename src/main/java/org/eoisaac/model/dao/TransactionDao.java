@@ -1,6 +1,8 @@
 package org.eoisaac.model.dao;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.eoisaac.config.database.DatabaseSession;
 import org.eoisaac.model.entities.TransactionEntity;
 import org.hibernate.Session;
@@ -40,13 +42,13 @@ public class TransactionDao {
     }
   }
 
-  public Boolean delete(TransactionEntity entity) {
+  public Boolean delete(UUID id) {
     Session session = null;
     try {
       session = DatabaseSession.get();
       if (session != null) {
         session.beginTransaction();
-        session.remove(entity);
+        session.remove( session.byId(TransactionEntity.class).load(id));
         session.getTransaction().commit();
         return true;
       } else {
@@ -57,4 +59,21 @@ public class TransactionDao {
       DatabaseSession.close(session);
     }
   }
+
+  public List<TransactionEntity> getAll() {
+    Session session = null;
+    try {
+      session = DatabaseSession.get();
+      if (session != null) {
+        session.beginTransaction();
+        return session.createQuery("from TransactionEntity", TransactionEntity.class).list();
+      } else {
+        System.out.println("Session not created");
+        return null;
+      }
+    } finally {
+      DatabaseSession.close(session);
+    }
+  }
+
 }

@@ -19,12 +19,12 @@
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <!-- Enable Hibernate's automatic session context management -->
-        <property name="hibernate.hbm2ddl.auto">create</property>
+<!--          <property name="hibernate.hbm2ddl.auto">create</property>-->
         <!-- Echo all executed SQL to stdout -->
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
         <!-- Populate database with initial data on startup -->
-        <property name="hibernate.hbm2ddl.import_files">data/seed.sql</property>
+<!--        <property name="hibernate.hbm2ddl.import_files">data/seed.sql</property>-->
 
         <!-- Names the annotated entity class -->
         <mapping class="org.eoisaac.model.entities.TransactionEntity"/>

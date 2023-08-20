@@ -4,24 +4,35 @@ import org.eoisaac.controllers.CategoryController;
 import org.eoisaac.controllers.TransactionController;
 import org.eoisaac.model.entities.CategoryEntity;
 import org.eoisaac.model.entities.TransactionEntity;
+import org.eoisaac.model.entities.TransactionSummary;
 import org.eoisaac.model.entities.TransactionType;
 import org.eoisaac.utils.DateUtils;
+import org.eoisaac.utils.TransactionUtils;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
-import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.*;
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author saulo.cabral
  */
 public class AppFrame extends JFrame {
+  private final CategoryController categoryController;
+  private final TransactionController transactionController;
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  String[] comboBoxOptions = {"Opção 1", "Opção 2", "Opção 3"};
+  private String[] comboBoxOptions = {"Opção 1", "Opção 2", "Opção 3"};
+
+  private List<TransactionEntity> transactions;
+  private TransactionSummary transactionSummary;
+  private boolean hasTransactions = false;
+
   private JButton createTransactionButton;
   private JComboBox<String> transactionCategoryComboBox;
   private JFormattedTextField transactionEntryDateField;
@@ -49,7 +60,12 @@ public class AppFrame extends JFrame {
   private JTextField transactionValueField;
   /** Creates new form AppFrame */
   public AppFrame() {
+    transactionController = new TransactionController();
+    categoryController = new CategoryController();
+
     createUIComponents();
+
+    updateTransactionsData();
   }
 
   // End of variables declaration//GEN-END:variables
@@ -84,7 +100,7 @@ public class AppFrame extends JFrame {
     // </editor-fold>
 
     /* Create and display the form */
-    java.awt.EventQueue.invokeLater(
+    EventQueue.invokeLater(
         new Runnable() {
           public void run() {
             new AppFrame().setVisible(true);
@@ -138,19 +154,19 @@ public class AppFrame extends JFrame {
 
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-    mainPanel.setBackground(new java.awt.Color(255, 255, 255));
+    mainPanel.setBackground(new Color(255, 255, 255));
 
-    transactionFormPanel.setBackground(new java.awt.Color(204, 204, 255));
+    transactionFormPanel.setBackground(new Color(204, 204, 255));
     transactionFormPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
     // Transaction Name
-    transactionNameLabel.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
     transactionNameLabel.setText("Nome");
 
-    transactionNameField.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionNameField.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
 
     // Transaction Category
-    transactionCategoryLabel.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionCategoryLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
     transactionCategoryLabel.setText("Classificação");
 
     // Transaction Value
@@ -158,13 +174,13 @@ public class AppFrame extends JFrame {
     transactionCategoryComboBox.setModel(new DefaultComboBoxModel<>(comboBoxOptions));
     transactionCategoryComboBox.setEditable(true);
 
-    transactionValueLabel.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
     transactionValueLabel.setText("Valor");
 
-    transactionValueField.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionValueField.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
 
     // Transaction Entry Date
-    transactionEntryDateLabel.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionEntryDateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
     transactionEntryDateLabel.setText("Data");
 
     try {
@@ -174,28 +190,27 @@ public class AppFrame extends JFrame {
       System.out.println("Error formatting date field mask");
       e.printStackTrace();
     }
-    transactionEntryDateField.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionEntryDateField.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
 
     // Transaction Type
-    transactionTypeIncomeRadioButton.setBackground(new java.awt.Color(204, 204, 255));
-    transactionTypeIncomeRadioButton.setFont(
-        new java.awt.Font("Segoe UI", Font.PLAIN, 24)); // NOI18N
+    transactionTypeIncomeRadioButton.setBackground(new Color(204, 204, 255));
+    transactionTypeIncomeRadioButton.setFont(new Font("Segoe UI", Font.PLAIN, 24)); // NOI18N
     transactionTypeIncomeRadioButton.setText("Ganho (+)");
 
-    transactionTypeExpenseRadioButton.setBackground(new java.awt.Color(204, 204, 255));
-    transactionTypeExpenseRadioButton.setFont(
-        new java.awt.Font("Segoe UI", Font.PLAIN, 24)); // NOI18N
+    transactionTypeExpenseRadioButton.setBackground(new Color(204, 204, 255));
+    transactionTypeExpenseRadioButton.setFont(new Font("Segoe UI", Font.PLAIN, 24)); // NOI18N
     transactionTypeExpenseRadioButton.setText("Gasto (-)");
 
     ButtonGroup transactionTypesGroup = new ButtonGroup();
     transactionTypesGroup.add(transactionTypeIncomeRadioButton);
     transactionTypesGroup.add(transactionTypeExpenseRadioButton);
+    transactionTypesGroup.setSelected(transactionTypeIncomeRadioButton.getModel(), true);
 
     //    transactionTypeIncomeRadioButton.addActionListener(this::handleTransactionTypeSelection);
     //    transactionTypeExpenseRadioButton.addActionListener(this::handleTransactionTypeSelection);
 
     // Create Transaction Button
-    createTransactionButton.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 24)); // NOI18N
+    createTransactionButton.setFont(new Font("Segoe UI", Font.PLAIN, 24)); // NOI18N
     createTransactionButton.setText("CADASTRAR");
 
     createTransactionButton.addActionListener(this::handleNewTransactionFormSubmit);
@@ -311,39 +326,34 @@ public class AppFrame extends JFrame {
                     .addContainerGap(73, Short.MAX_VALUE)));
 
     transactionsTable.setBorder(BorderFactory.createEtchedBorder());
-    transactionsTable.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
+    transactionsTable.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     transactionsTable.setModel(
         new DefaultTableModel(
-            new Object[][] {
-              {null, null, null, null, null},
-              {null, null, null, null, null},
-              {null, null, null, null, null},
-              {null, null, null, null, null}
-            },
+            new Object[][] {},
             new String[] {"Nome", "Classificação", "valor", "Data", "Cadastro"}));
     transactionsTablePanel.setViewportView(transactionsTable);
 
     deleteTransactionButton.setText("DEL");
 
-    totalIncomeLabel.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
+    totalIncomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalIncomeLabel.setText("Recebido (R$):");
 
-    totalIncome.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
+    totalIncome.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalIncome.setText("0.00");
 
-    totalExpenseLabel.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
+    totalExpenseLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalExpenseLabel.setText("Gastos (R$):");
 
-    totalExpense.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
+    totalExpense.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalExpense.setText("0.00");
 
-    totalBalanceLabel.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
+    totalBalanceLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalBalanceLabel.setText("Diferença (R$):");
 
-    totalBalance.setFont(new java.awt.Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
+    totalBalance.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalBalance.setText("0.00");
 
-    frameTitle.setFont(new java.awt.Font("Segoe UI", Font.BOLD, 24)); // NOI18N
+    frameTitle.setFont(new Font("Segoe UI", Font.BOLD, 24)); // NOI18N
     frameTitle.setText("Finanças Anual Seu José");
 
     GroupLayout transactionsTableGroupLayout = new GroupLayout(mainPanel);
@@ -451,24 +461,77 @@ public class AppFrame extends JFrame {
     pack();
   } // </editor-fold>//GEN-END:initComponents
 
-  private void handleNewTransactionFormSubmit(ActionEvent evt) {
-    CategoryController categoryController = new CategoryController();
-    TransactionController transactionController = new TransactionController();
+  private void resetFormFields() {
+    transactionNameField.setText("");
+    transactionValueField.setText("");
+    transactionEntryDateField.setText("");
+    transactionCategoryComboBox.setSelectedIndex(0);
+  }
 
+  private void updateTransactionsData() {
+    transactions = transactionController.getAllTransactions(); // or use local variable as cache
+
+    hasTransactions = !transactions.isEmpty();
+
+    handleRenderTransactionsTable();
+    handleRenderTransactionSummary();
+  }
+
+  private void handleNewTransactionFormSubmit(ActionEvent evt) {
     String transactionName = transactionNameField.getText();
     String transactionValue = transactionValueField.getText();
     String entryDate = transactionEntryDateField.getText();
     String selectedCategory = (String) transactionCategoryComboBox.getSelectedItem();
     boolean isIncome = transactionTypeIncomeRadioButton.isSelected();
-
     TransactionType transactionType = isIncome ? TransactionType.INCOME : TransactionType.EXPENSE;
     Instant entryDateInstant = DateUtils.convertStringToInstant(entryDate);
-
     float transactionValueFloat = Float.parseFloat(transactionValue);
 
-    CategoryEntity category = categoryController.createCategory(selectedCategory);
-    TransactionEntity transaction =
+    Optional<CategoryEntity> category = categoryController.createCategory(selectedCategory);
+
+    if (category.isEmpty()) {
+      System.out.println("Category not created");
+      return;
+    }
+
+    Optional<TransactionEntity> createdTransaction =
         transactionController.createTransaction(
-            transactionName, transactionType, transactionValueFloat, entryDateInstant, category);
+            transactionName,
+            transactionType,
+            transactionValueFloat,
+            entryDateInstant,
+            category.get());
+
+    if (createdTransaction.isEmpty()) {
+      System.out.println("Transaction not created");
+      return;
+    }
+
+    transactions.add(createdTransaction.get());
+    updateTransactionsData();
+    resetFormFields();
+  }
+
+  public void handleRenderTransactionSummary() {
+    transactionSummary = TransactionUtils.calculateTransactionSummary(transactions);
+    totalIncome.setText(transactionSummary.getTotalIncome() + "");
+    totalExpense.setText(transactionSummary.getTotalExpense() + "");
+    totalBalance.setText(transactionSummary.getTotalBalance() + "");
+  }
+
+  private void handleRenderTransactionsTable() {
+    DefaultTableModel tableModel = (DefaultTableModel) transactionsTable.getModel();
+    tableModel.setRowCount(0);
+    transactions.forEach(
+        transaction -> {
+          tableModel.addRow(
+              new Object[] {
+                transaction.getName(),
+                transaction.getCategory().getName(),
+                transaction.getValue(),
+                transaction.getEntryDate(),
+                transaction.getCreatedAt()
+              });
+        });
   }
 }
