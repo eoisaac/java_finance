@@ -1,5 +1,6 @@
 package org.eoisaac.model.dao;
 
+import java.util.List;
 import java.util.Optional;
 import org.eoisaac.config.database.DatabaseSession;
 import org.eoisaac.model.entities.CategoryEntity;
@@ -53,6 +54,21 @@ public class CategoryDao {
       } else {
         System.out.println("Session not created");
         return false;
+      }
+    } finally {
+      DatabaseSession.close(session);
+    }
+  }
+
+  public List<CategoryEntity> getAll() {
+    Session session = null;
+    try {
+      session = DatabaseSession.get();
+      if (session != null) {
+        return session.createQuery("from CategoryEntity", CategoryEntity.class).list();
+      } else {
+        System.out.println("Session not created");
+        return null; // or return an empty list
       }
     } finally {
       DatabaseSession.close(session);

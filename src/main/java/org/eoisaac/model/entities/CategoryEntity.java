@@ -6,6 +6,8 @@ import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "categories")
+@Getter
+@Setter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
