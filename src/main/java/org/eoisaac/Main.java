@@ -1,14 +1,15 @@
 package org.eoisaac;
 
-import java.time.Instant;
-import java.util.Optional;
-import org.eoisaac.model.dao.TransactionDao;
-import org.eoisaac.model.entities.TransactionEntity;
-import org.eoisaac.model.entities.TransactionType;
+
+import org.eoisaac.views.AppFrame;
+
+import javax.swing.*;
 
 public class Main {
   public static void main(String[] args) {
-
-
+    SwingUtilities.invokeLater(() -> {
+      AppFrame appFrame = new AppFrame();
+      appFrame.setVisible(true);
+    });
   }
 }

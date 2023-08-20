@@ -11,7 +11,7 @@ public class AppFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cadastrarBtn;
-    private javax.swing.JTextField classificacaoTxt;
+    private javax.swing.JComboBox<String> classificacaoComboBox;
     private javax.swing.JFormattedTextField dataTxt;
     private javax.swing.JButton deletarBtn;
     private javax.swing.JLabel diferencaTxt;
@@ -92,7 +92,7 @@ public class AppFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         nomeTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        classificacaoTxt = new javax.swing.JTextField();
+        classificacaoComboBox = new javax.swing.JComboBox<>(); // ClassificacaoComboBox
         jLabel3 = new javax.swing.JLabel();
         valorTxt = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -127,7 +127,9 @@ public class AppFrame extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Classificação");
 
-        classificacaoTxt.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        classificacaoComboBox.setFont(new java.awt.Font("Segoe UI", 0, 18));
+        classificacaoComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Opção 1", "Opção 2", "Opção 3" }));
+        classificacaoComboBox.setEditable(true);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("Valor");
@@ -169,7 +171,7 @@ public class AppFrame extends javax.swing.JFrame {
                                 .addContainerGap()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(nomeTxt)
-                                        .addComponent(classificacaoTxt)
+                                        .addComponent(classificacaoComboBox)  // Usando o JComboBox aqui
                                         .addComponent(valorTxt)
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                                 .addGroup(jPanel2Layout
@@ -207,7 +209,7 @@ public class AppFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel2)
                                 .addGap(6, 6, 6)
-                                .addComponent(classificacaoTxt, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                .addComponent(classificacaoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
                                         javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel3)

@@ -43,6 +43,5 @@
             <artifactId>google-java-format</artifactId>
             <version>1.17.0</version>
         </dependency>
-
     </dependencies>
 </project>
