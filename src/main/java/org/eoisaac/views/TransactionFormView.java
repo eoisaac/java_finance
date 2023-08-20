@@ -1,10 +1,18 @@
 package org.eoisaac.views;
 
+import org.eoisaac.controllers.CategoryController;
+import org.eoisaac.controllers.TransactionController;
+import org.eoisaac.model.entities.CategoryEntity;
+import org.eoisaac.model.entities.TransactionEntity;
+import org.eoisaac.model.entities.TransactionType;
+import org.eoisaac.utils.DateUtils;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.Instant;
 
 public class TransactionFormView extends JPanel {
 
@@ -225,11 +233,22 @@ public class TransactionFormView extends JPanel {
   }
 
   private void handleNewTransactionFormSubmit(ActionEvent evt) {
+    CategoryController categoryController = new CategoryController();
+    TransactionController transactionController = new TransactionController();
+
     String transactionName = transactionNameField.getText();
     String transactionValue = transactionValueField.getText();
     String entryDate = transactionEntryDateField.getText();
     String selectedCategory = (String) transactionCategoryComboBox.getSelectedItem();
     boolean isIncome = transactionTypeIncomeRadioButton.isSelected();
-    boolean isExpense = transactionTypeExpenseRadioButton.isSelected();
+
+    TransactionType transactionType = isIncome ? TransactionType.INCOME : TransactionType.EXPENSE;
+    Instant entryDateInstant = DateUtils.convertStringToInstant(entryDate);;
+    Float transactionValueFloat = Float.parseFloat(transactionValue);
+
+    CategoryEntity category = categoryController.createCategory(selectedCategory);
+    TransactionEntity transaction =
+        transactionController.createTransaction(
+            transactionName, transactionType, transactionValueFloat, entryDateInstant, category);
   }
 }

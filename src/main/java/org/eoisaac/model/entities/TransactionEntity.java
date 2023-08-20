@@ -26,9 +26,6 @@ public class TransactionEntity extends BaseEntity {
   @Column(name = "entry_date")
   private Instant entryDate;
 
-  @Column(name = "registered_at")
-  private Instant registeredAt;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   private CategoryEntity category;
