@@ -5,28 +5,28 @@ import java.time.Instant;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Entity
-@Table(name = "transactions")
-@Getter
-@Setter
-@SuperBuilder
-@AllArgsConstructor
-@NoArgsConstructor
-public class TransactionEntity extends BaseEntity {
-  @Column(name = "name")
+@Entity // Tells Hibernate to create a table for this class
+@Table(name = "transactions") // Sets the name of the table
+@Getter // Automatically generates getters for all fields
+@Setter // Automatically generates setters for all fields
+@SuperBuilder // Automatically generates builder pattern
+@AllArgsConstructor // Automatically generates all-args constructor
+@NoArgsConstructor // Automatically generates no-args constructor
+public class TransactionEntity extends BaseEntity { // Extends the BaseEntity class
+  @Column(name = "name") // Sets the name of the column
   private String name;
 
-  @Column(name = "type")
-  @Enumerated(EnumType.STRING)
+  @Column(name = "type") // Sets the name of the column
+  @Enumerated(EnumType.STRING) // Sets the column to be an enumerated type
   private TransactionType type;
 
-  @Column(name = "value")
+  @Column(name = "value") // Sets the name of the column
   private Float value;
 
-  @Column(name = "entry_date")
+  @Column(name = "entry_date") // Sets the name of the column
   private Instant entryDate;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "category_id")
+  @ManyToOne(fetch = FetchType.EAGER) // Sets the relationship to be many-to-one
+  @JoinColumn(name = "category_id") // Sets the name of the column
   private CategoryEntity category;
 }

@@ -8,88 +8,93 @@ import org.hibernate.Session;
 
 public class CategoryDao {
 
-  public Optional<CategoryEntity> create(CategoryEntity entity) {
-    try (Session session = DatabaseSession.get()) {
-      if (session != null) {
-        session.beginTransaction();
-        session.persist(entity);
-        session.getTransaction().commit();
-        return Optional.of(entity);
+  public Optional<CategoryEntity> create(CategoryEntity entity) { // Create category
+    Session session = null; // Initialize session
+    try {
+      session = DatabaseSession.get(); // Get session
+      if (session != null) { // Check if session is not null
+        session.beginTransaction(); // Begin transaction
+        session.persist(entity); // Persist entity
+        session.getTransaction().commit(); // Commit transaction
+        return Optional.of(entity); // Return entity
       } else {
         System.out.println("Session not created");
-        return Optional.empty();
+        return Optional.empty(); // Return empty optional
       }
     } catch (Exception e) {
-      return Optional.empty();
+      return Optional.empty(); // Return empty optional
     }
   }
 
-  public CategoryEntity update(CategoryEntity entity) {
-    Session session = null;
+  public CategoryEntity update(CategoryEntity entity) { // Update category
+    Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get();
-      if (session != null) {
-        session.beginTransaction();
-        session.merge(entity);
-        session.getTransaction().commit();
-        return entity;
+      session = DatabaseSession.get(); // Get session
+      if (session != null) { // Check if session is not null
+        session.beginTransaction(); // Begin transaction
+        session.merge(entity); // Merge entity
+        session.getTransaction().commit(); // Commit transaction
+        return entity; // Return entity
       } else {
         System.out.println("Session not created");
-        return null;
+        return null; // Return null
       }
     } finally {
-      DatabaseSession.close(session);
+      DatabaseSession.close(session); // Close session
     }
   }
 
   public boolean delete(CategoryEntity entity) {
-    Session session = null;
+    Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get();
-      if (session != null) {
-        session.beginTransaction();
-        session.remove(entity);
-        session.getTransaction().commit();
-        return true;
+      session = DatabaseSession.get(); // Get session
+      if (session != null) { // Check if session is not null
+        session.beginTransaction(); // Begin transaction
+        session.remove(entity); // Remove entity
+        session.getTransaction().commit(); // Commit transaction
+        return true; // Return true
       } else {
         System.out.println("Session not created");
-        return false;
+        return false; // Return false
       }
     } finally {
-      DatabaseSession.close(session);
+      DatabaseSession.close(session); // Close session
     }
   }
 
-  public Optional<CategoryEntity> getByName(String name) {
-    Session session = null;
+  public Optional<CategoryEntity> getByName(String name) { // Get category by name
+    Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get();
-      if (session != null) {
+      session = DatabaseSession.get(); // Get session
+      if (session != null) { // Check if session is not null
+        return session // Return session
+            .createQuery(
+                "from CategoryEntity where name = :name", CategoryEntity.class) // Create query
+            .setParameter("name", name) // Set parameter
+            .uniqueResultOptional(); // Return unique result
+      } else {
+        System.out.println("Session not created");
+        return Optional.empty(); // Return empty optional
+      }
+    } finally {
+      DatabaseSession.close(session); // Close session
+    }
+  }
+
+  public List<CategoryEntity> getAll() { // Get all categories
+    Session session = null; // Initialize session
+    try {
+      session = DatabaseSession.get(); // Get session
+      if (session != null) { // Check if session is not null
         return session
-            .createQuery("from CategoryEntity where name = :name", CategoryEntity.class)
-            .setParameter("name", name)
-            .uniqueResultOptional();
-      } else {
-        System.out.println("Session not created");
-        return Optional.empty();
-      }
-    } finally {
-      DatabaseSession.close(session);
-    }
-  }
-
-  public List<CategoryEntity> getAll() {
-    Session session = null;
-    try {
-      session = DatabaseSession.get();
-      if (session != null) {
-        return session.createQuery("from CategoryEntity", CategoryEntity.class).list();
+            .createQuery("from CategoryEntity", CategoryEntity.class)
+            .list(); // Return list
       } else {
         System.out.println("Session not created");
         return null; // or return an empty list
       }
     } finally {
-      DatabaseSession.close(session);
+      DatabaseSession.close(session); // Close session
     }
   }
 }

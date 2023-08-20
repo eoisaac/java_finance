@@ -1,3 +1,14 @@
 # java_finance
 
-Requirements in `./docs/requirements.pdf`
+The project requirements are in `./docs/requirements.pdf`
+
+## Environment
+
+## Setup
+
+## Run
+
+## Test
+
+## Build
+

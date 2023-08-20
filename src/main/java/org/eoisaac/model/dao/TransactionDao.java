@@ -8,72 +8,75 @@ import org.eoisaac.model.entities.TransactionEntity;
 import org.hibernate.Session;
 
 public class TransactionDao {
-  public Optional<TransactionEntity> create(TransactionEntity entity) {
-    try (Session session = DatabaseSession.get()) {
-      if (session != null) {
-        session.beginTransaction();
-        session.persist(entity);
-        session.getTransaction().commit();
-        return Optional.of(entity);
+  public Optional<TransactionEntity> create(TransactionEntity entity) { // Create category
+    Session session = null; // Initialize session
+    try {
+      session = DatabaseSession.get(); // Get session
+      if (session != null) { // Check if session is not null
+        session.beginTransaction(); // Begin transaction
+        session.persist(entity); // Persist entity
+        session.getTransaction().commit(); // Commit transaction
+        return Optional.of(entity); // Return entity
       } else {
         System.out.println("Session not created");
-        return Optional.empty();
+        return Optional.empty(); // Return empty optional
       }
     } catch (Exception e) {
-      return Optional.empty();
+      return Optional.empty(); // Return empty optional
     }
   }
 
-  public TransactionEntity update(TransactionEntity entity) {
-    Session session = null;
+  public TransactionEntity update(TransactionEntity entity) { // Update category
+    Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get();
-      if (session != null) {
-        session.beginTransaction();
-        session.merge(entity);
-        session.getTransaction().commit();
-        return entity;
+      session = DatabaseSession.get(); // Get session
+      if (session != null) { // Check if session is not null
+        session.beginTransaction(); // Begin transaction
+        session.merge(entity); // Merge entity
+        session.getTransaction().commit(); // Commit transaction
+        return entity; // Return entity
       } else {
         System.out.println("Session not created");
-        return null;
+        return null; // Return null
       }
     } finally {
-      DatabaseSession.close(session);
+      DatabaseSession.close(session); // Close session
     }
   }
 
-  public boolean delete(UUID id) {
-    Session session = null;
+  public boolean delete(UUID id) { // Delete category
+    Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get();
-      if (session != null) {
-        session.beginTransaction();
-        session.remove( session.byId(TransactionEntity.class).load(id));
-        session.getTransaction().commit();
-        return true;
+      session = DatabaseSession.get(); // Get session
+      if (session != null) { // Check if session is not null
+        session.beginTransaction(); // Begin transaction
+        session.remove(session.byId(TransactionEntity.class).load(id)); // Remove entity
+        session.getTransaction().commit(); // Commit transaction
+        return true; // Return true
       } else {
         System.out.println("Session not created");
-        return false;
+        return false; // Return false
       }
     } finally {
-      DatabaseSession.close(session);
+      DatabaseSession.close(session); // Close session
     }
   }
 
-  public List<TransactionEntity> getAll() {
-    Session session = null;
+  public List<TransactionEntity> getAll() { // Get all categories
+    Session session = null; // Initialize session
     try {
       session = DatabaseSession.get();
-      if (session != null) {
-        session.beginTransaction();
-        return session.createQuery("from TransactionEntity", TransactionEntity.class).list();
+      if (session != null) { // Check if session is not null
+        session.beginTransaction(); // Begin transaction
+        return session
+            .createQuery("from TransactionEntity", TransactionEntity.class)
+            .list(); // Return list of categories
       } else {
         System.out.println("Session not created");
-        return null;
+        return null; // Return null
       }
     } finally {
-      DatabaseSession.close(session);
+      DatabaseSession.close(session); // Close session
     }
   }
-
 }

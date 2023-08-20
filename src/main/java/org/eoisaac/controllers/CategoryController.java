@@ -8,19 +8,22 @@ import java.util.Optional;
 
 public class CategoryController {
 
-  CategoryDao categoryDao;
+  CategoryDao categoryDao; // Category DAO
 
-  public CategoryController() {
-    categoryDao = new CategoryDao();
+  public CategoryController() { // Constructor
+
+    categoryDao = new CategoryDao(); // Initialize category DAO
   }
 
-  public Optional<CategoryEntity> createCategory(String name) {
-    CategoryEntity newCategory = CategoryEntity.builder().name(name).build();
-    Optional<CategoryEntity> category = categoryDao.getByName(name);
-    return category.isPresent() ? category : categoryDao.create(newCategory);
+  public Optional<CategoryEntity> createCategory(String name) { // Create category
+    CategoryEntity newCategory = CategoryEntity.builder().name(name).build(); // Create new category
+    Optional<CategoryEntity> category = categoryDao.getByName(name); // Get category by name
+    return category.isPresent()
+        ? category
+        : categoryDao.create(newCategory); // Return category if it exists, else create category
   }
 
-  public List<CategoryEntity> getAllCategories() {
-    return categoryDao.getAll();
+  public List<CategoryEntity> getAllCategories() { // Get all categories
+    return categoryDao.getAll(); // Return all categories
   }
 }

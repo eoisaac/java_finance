@@ -11,15 +11,19 @@ import org.eoisaac.model.entities.TransactionEntity;
 import org.eoisaac.model.entities.TransactionType;
 
 public class TransactionController {
-  TransactionDao transactionDao;
+  TransactionDao transactionDao; // Transaction DAO
 
-  public TransactionController() {
-    transactionDao = new TransactionDao();
+  public TransactionController() { // Constructor
+    transactionDao = new TransactionDao(); // Initialize transaction DAO
   }
 
   public Optional<TransactionEntity> createTransaction(
-      String name, TransactionType type, float value, Instant entryDate, CategoryEntity category) {
-    TransactionEntity newTransaction =
+      String name,
+      TransactionType type,
+      float value,
+      Instant entryDate,
+      CategoryEntity category) { // Create transaction
+    TransactionEntity newTransaction = // Create new transaction
         TransactionEntity.builder()
             .name(name)
             .type(type)
@@ -27,14 +31,15 @@ public class TransactionController {
             .entryDate(entryDate)
             .category(category)
             .build();
-    return transactionDao.create(newTransaction);
+    return transactionDao.create(newTransaction); // Return created transaction
   }
 
-  public boolean deleteTransaction(UUID id) {
-    return transactionDao.delete(id);
+  public boolean deleteTransaction(UUID id) { // Delete transaction
+
+    return transactionDao.delete(id); // Return true if transaction was deleted, else false
   }
 
-  public List<TransactionEntity> getAllTransactions() {
-    return transactionDao.getAll();
+  public List<TransactionEntity> getAllTransactions() { // Get all transactions
+    return transactionDao.getAll(); // Return all transactions
   }
 }

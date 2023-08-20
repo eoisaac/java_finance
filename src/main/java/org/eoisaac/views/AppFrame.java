@@ -19,9 +19,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.Instant;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * @author saulo.cabral
@@ -61,6 +60,9 @@ public class AppFrame extends JFrame {
   private JPanel mainPanel;
   private JPanel transactionFormPanel;
   private JScrollPane transactionsTablePanel;
+
+  private JPanel alertMessagesContainer;
+  private JLabel alertMessage;
   private JSeparator separator;
   private JTextField transactionNameField;
   private JLabel totalIncome;
@@ -70,9 +72,9 @@ public class AppFrame extends JFrame {
     transactionController = new TransactionController();
     categoryController = new CategoryController();
 
-    createUIComponents();
+    createUIComponents(); // Generates the UI components
 
-    updateTransactionsData();
+    updateTransactionsData(); // Updates the transactions data on the table
   }
 
   // End of variables declaration//GEN-END:variables
@@ -151,6 +153,9 @@ public class AppFrame extends JFrame {
     transactionsTablePanel = new JScrollPane();
     transactionsTable = new JTable();
 
+    alertMessagesContainer = new JPanel();
+    alertMessage = new JLabel();
+
     deleteTransactionButton = new JButton();
     totalIncomeLabel = new JLabel();
     totalIncome = new JLabel();
@@ -170,6 +175,14 @@ public class AppFrame extends JFrame {
 
     transactionFormPanel.setBackground(new Color(204, 204, 255));
     transactionFormPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+    alertMessagesContainer.setBackground(new Color(0, 0, 0));
+    alertMessagesContainer.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+    alertMessage.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    alertMessage.setText("Nenhuma transação cadastrada");
+
+    alertMessagesContainer.add(alertMessage);
 
     // Transaction Name
     transactionNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
@@ -380,21 +393,21 @@ public class AppFrame extends JFrame {
 
     frameTitle.setFont(new Font("Segoe UI", Font.BOLD, 24)); // NOI18N
     frameTitle.setText("Finanças Anual Seu José");
-    createTransactionButton.addActionListener(this::handleNewTransactionFormSubmit);
 
-    GroupLayout transactionsTableGroupLayout = new GroupLayout(mainPanel);
-    mainPanel.setLayout(transactionsTableGroupLayout);
-    transactionsTableGroupLayout.setHorizontalGroup(
-        transactionsTableGroupLayout
+    GroupLayout mainLayout = new GroupLayout(mainPanel);
+    mainPanel.setLayout(mainLayout);
+    //    transactionFormPanel.setBackground(new Color(0, 204, 255));
+    mainLayout.setHorizontalGroup(
+        mainLayout
             .createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(
-                transactionsTableGroupLayout
+                mainLayout
                     .createSequentialGroup()
                     .addGroup(
-                        transactionsTableGroupLayout
+                        mainLayout
                             .createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addGroup(
-                                transactionsTableGroupLayout
+                                mainLayout
                                     .createSequentialGroup()
                                     .addContainerGap()
                                     .addComponent(
@@ -404,17 +417,17 @@ public class AppFrame extends JFrame {
                                         GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addGroup(
-                                        transactionsTableGroupLayout
+                                        mainLayout
                                             .createParallelGroup(
                                                 GroupLayout.Alignment.TRAILING, false)
                                             .addGroup(
-                                                transactionsTableGroupLayout
+                                                mainLayout
                                                     .createSequentialGroup()
                                                     .addComponent(totalIncomeLabel)
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(totalIncome)
-                                                    .addGap(64, 64, 64)
+                                                    .addGap(20, 20, 20)
                                                     .addComponent(totalExpenseLabel)
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED)
@@ -427,7 +440,7 @@ public class AppFrame extends JFrame {
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(totalBalance)
-                                                    .addGap(24, 24, 24)
+                                                    .addGap(20, 20, 20)
                                                     .addComponent(deleteTransactionButton))
                                             .addComponent(
                                                 transactionsTablePanel,
@@ -435,22 +448,22 @@ public class AppFrame extends JFrame {
                                                 592,
                                                 GroupLayout.PREFERRED_SIZE)))
                             .addGroup(
-                                transactionsTableGroupLayout
+                                mainLayout
                                     .createSequentialGroup()
                                     .addGap(363, 363, 363)
                                     .addComponent(frameTitle)))
                     .addContainerGap(16, Short.MAX_VALUE)));
-    transactionsTableGroupLayout.setVerticalGroup(
-        transactionsTableGroupLayout
+    mainLayout.setVerticalGroup(
+        mainLayout
             .createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(
                 GroupLayout.Alignment.TRAILING,
-                transactionsTableGroupLayout
+                mainLayout
                     .createSequentialGroup()
                     .addComponent(frameTitle)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                     .addGroup(
-                        transactionsTableGroupLayout
+                        mainLayout
                             .createParallelGroup(GroupLayout.Alignment.LEADING, false)
                             .addComponent(transactionsTablePanel)
                             .addComponent(
@@ -460,7 +473,7 @@ public class AppFrame extends JFrame {
                                 GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(
-                        transactionsTableGroupLayout
+                        mainLayout
                             .createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(deleteTransactionButton)
                             .addComponent(totalIncomeLabel)
@@ -487,49 +500,63 @@ public class AppFrame extends JFrame {
     pack();
   } // </editor-fold>//GEN-END:initComponents
 
-  private void resetFormFields() {
-    transactionNameField.setText("");
-    transactionPriceField.setText("");
-    transactionEntryDateField.setText("");
-    transactionCategoryComboBox.setSelectedIndex(0);
+  private void resetFormFields() { // Resets the form fields
+    transactionNameField.setText(""); // Resets the transaction name field
+    transactionPriceField.setText(""); // Resets the transaction price field
+    transactionEntryDateField.setText(""); // Resets the transaction entry date field
+    transactionCategoryComboBox.setSelectedIndex(0); // Resets the transaction category combo box
   }
 
-  private void deleteTransaction(UUID transactionId) {
-    boolean deleted = transactionController.deleteTransaction(transactionId);
-    if (deleted) {
-      selectedTransactionId = null;
-      deleteTransactionButton.setEnabled(false);
-      updateTransactionsData();
+  private void deleteTransaction(UUID transactionId) { // Deletes a transaction
+    boolean deleted =
+        transactionController.deleteTransaction(transactionId); // Deletes the transaction
+    if (deleted) { // If the transaction was deleted
+      selectedTransactionId = null; // Resets the selected transaction id
+      deleteTransactionButton.setEnabled(false); // Disables the delete transaction button
+      updateTransactionsData(); // Updates the transactions data on the table without the deleted
+      // transaction
     }
   }
 
-  private void updateTransactionsData() {
+  private void updateTransactionsData() { // Updates the transactions data on the table
     transactions = transactionController.getAllTransactions(); // or use local variable as cache
-    hasTransactions = !transactions.isEmpty();
+    hasTransactions = !transactions.isEmpty(); // Checks if there are transactions
 
-    renderTransactionsTable();
-    renderCategoriesComboBox();
-    renderTransactionsSummary();
+    renderTransactionsTable(); // Renders the transactions table
+    renderCategoriesComboBox(); // Renders the categories combo box
+    renderTransactionsSummary(); // Renders the transactions summary
+
+    transactionsTable.setVisible(
+        hasTransactions); // Shows the transactions table if there are transactions
+    alertMessagesContainer.setVisible(
+        !hasTransactions); // Shows the alert message if there are no transactions
   }
 
-  private void handleNewTransactionFormSubmit(ActionEvent evt) {
-    String transactionName = transactionNameField.getText();
-    String transactionValue = transactionPriceField.getText();
-    String entryDate = transactionEntryDateField.getText();
-    String selectedCategory = (String) transactionCategoryComboBox.getSelectedItem();
-    boolean isIncome = transactionTypeIncomeRadioButton.isSelected();
-    TransactionType transactionType = isIncome ? TransactionType.INCOME : TransactionType.EXPENSE;
-    Instant entryDateInstant = DateUtils.convertStringToInstant(entryDate);
-    float transactionValueFloat = Float.parseFloat(transactionValue);
+  private void handleNewTransactionFormSubmit(
+      ActionEvent evt) { // Handles the new transaction form submit
+    String transactionName = transactionNameField.getText(); // Gets the transaction name
+    String transactionValue = transactionPriceField.getText(); // Gets the transaction value
+    String entryDate = transactionEntryDateField.getText(); // Gets the transaction entry date
+    String selectedCategory =
+        (String) transactionCategoryComboBox.getSelectedItem(); // Gets the selected category
+    boolean isIncome =
+        transactionTypeIncomeRadioButton.isSelected(); // Checks if the transaction is income
+    TransactionType transactionType =
+        isIncome ? TransactionType.INCOME : TransactionType.EXPENSE; // Sets the transaction type
+    Instant entryDateInstant =
+        DateUtils.convertStringToInstant(entryDate); // Converts the entry date to an instant
+    float transactionValueFloat =
+        Float.parseFloat(transactionValue); // Converts the transaction value to a float
 
-    Optional<CategoryEntity> category = categoryController.createCategory(selectedCategory);
+    Optional<CategoryEntity> category =
+        categoryController.createCategory(selectedCategory); // Creates the category
 
-    if (category.isEmpty()) {
+    if (category.isEmpty()) { // If the category was not created
       System.out.println("Category not created");
       return;
     }
 
-    Optional<TransactionEntity> createdTransaction =
+    Optional<TransactionEntity> createdTransaction = // Creates the transaction
         transactionController.createTransaction(
             transactionName,
             transactionType,
@@ -537,81 +564,101 @@ public class AppFrame extends JFrame {
             entryDateInstant,
             category.get());
 
-    if (createdTransaction.isEmpty()) {
+    if (createdTransaction.isEmpty()) { // If the transaction was not created
       System.out.println("Transaction not created");
       return;
     }
 
-    transactions.add(createdTransaction.get());
-    updateTransactionsData();
-    resetFormFields();
+    System.out.println("Transaction created");
+
+    transactions.add(createdTransaction.get()); // Adds the created transaction to the list
+    updateTransactionsData(); // Updates the transactions data on the table with the created
+    // transaction
+    //    resetFormFields();
   }
 
-  public void handleSelectedTransaction(MouseEvent evt) {
-    int selectedRow = transactionsTable.getSelectedRow();
-    DefaultTableModel tableModel = (DefaultTableModel) transactionsTable.getModel();
-    UUID selectedTransactionId = (UUID) tableModel.getValueAt(selectedRow, 0);
-    this.selectedTransactionId = selectedTransactionId;
+  public void handleSelectedTransaction(MouseEvent evt) { // Handles the selected transaction
+    int selectedRow = transactionsTable.getSelectedRow(); // Gets the selected row
+    DefaultTableModel tableModel =
+        (DefaultTableModel) transactionsTable.getModel(); // Gets the table model
+    this.selectedTransactionId =
+        (UUID) tableModel.getValueAt(selectedRow, 0); // Gets the selected transaction id
 
-    deleteTransactionButton.setEnabled(true);
+    deleteTransactionButton.setEnabled(true); // Enables the delete transaction button
   }
 
-  private void handleDisplayConfirmDialog(ActionEvent actionEvent) {
+  private void handleDisplayConfirmDialog(
+      ActionEvent actionEvent) { // Handles the display confirm dialog
+    System.out.println("Display confirm dialog");
     int result =
-        JOptionPane.showOptionDialog(
-            this,
-            confirmDialogMessage,
-            "Excluir transação",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE,
-            null,
-            new Object[] {"Sim", "Não"},
-            "No");
+        JOptionPane.showOptionDialog( // Displays the confirm dialog
+            this, // Sets the parent component
+            confirmDialogMessage, // Sets the confirm dialog message
+            "Excluir transação", // Sets the confirm dialog title
+            JOptionPane.YES_NO_OPTION, // Sets the confirm dialog options
+            JOptionPane.WARNING_MESSAGE, // Sets the confirm dialog message type
+            null, // Sets the confirm dialog icon
+            new Object[] {"Sim", "Não"}, // Sets the confirm dialog buttons
+            "No"); // Sets the confirm dialog default button
 
-    if (result == JOptionPane.YES_OPTION) {
-      deleteTransaction(selectedTransactionId);
+    if (result == JOptionPane.YES_OPTION) { // If the user clicked the yes button
+      deleteTransaction(selectedTransactionId); // Deletes the transaction
     }
   }
 
-  public void renderTransactionsSummary() {
-    transactionSummary = TransactionUtils.calculateTransactionSummary(transactions);
-    totalIncome.setText(CurrencyUtils.formatCurrency(transactionSummary.getTotalIncome()));
-    totalExpense.setText(CurrencyUtils.formatCurrency(transactionSummary.getTotalExpense()));
-    totalBalance.setText(CurrencyUtils.formatCurrency(transactionSummary.getTotalBalance()));
+  public void renderTransactionsSummary() { // Renders the transactions summary
+    transactionSummary =
+        TransactionUtils.calculateTransactionSummary(
+            transactions); // Calculates the transaction summary
+    totalIncome.setText(
+        CurrencyUtils.formatCurrency(transactionSummary.getTotalIncome())); // Sets the total income
+    totalExpense.setText(
+        CurrencyUtils.formatCurrency(
+            transactionSummary.getTotalExpense())); // Sets the total expense
+    totalBalance.setText(
+        CurrencyUtils.formatCurrency(
+            transactionSummary.getTotalBalance())); // Sets the total balance
   }
 
-  private void renderTransactionsTable() {
-    DefaultTableModel tableModel = (DefaultTableModel) transactionsTable.getModel();
-    tableModel.setRowCount(0);
+  private void renderTransactionsTable() { // Renders the transactions table
+    DefaultTableModel tableModel =
+        (DefaultTableModel) transactionsTable.getModel(); // Gets the table model
+    tableModel.setRowCount(0); // Resets the table rows
 
-    List<String> hiddenColumnNames = List.of("ID", "Tipo");
+    List<String> hiddenColumnNames = List.of("ID", "Tipo"); // Sets the hidden column names
     transactionsTable.setDefaultRenderer(
-        Object.class, new TransactionTableRowRenderer(hiddenColumnNames));
+        Object.class,
+        new TransactionTableRowRenderer(
+            hiddenColumnNames)); // Sets the table row to set the background color of the row (RED
+    // or GREEN)
 
-    transactions.forEach(
+    transactions.forEach( // For each transaction
         transaction -> {
-          tableModel.addRow(
-              new Object[] {
-                transaction.getId(),
-                transaction.getType(),
-                transaction.getName(),
-                transaction.getCategory().getName(),
-                CurrencyUtils.formatCurrency(transaction.getValue()),
-                DateUtils.convertInstantToString(transaction.getEntryDate()),
-                DateUtils.convertInstantToString(transaction.getCreatedAt()),
+          tableModel.addRow( // Adds the transaction to the table
+              new Object[] { // Sets the transaction data
+                transaction.getId(), // Sets the transaction id
+                transaction.getType(), // Sets the transaction type
+                transaction.getName(), // Sets the transaction name
+                transaction.getCategory().getName(), // Sets the transaction category name
+                CurrencyUtils.formatCurrency(transaction.getValue()), // Sets the transaction value
+                DateUtils.convertInstantToString(
+                    transaction.getEntryDate()), // Sets the transaction entry date
+                DateUtils.convertInstantToString(
+                    transaction.getCreatedAt()), // Sets the transaction created at date
               });
         });
   }
 
-  private void renderCategoriesComboBox() {
+  private void renderCategoriesComboBox() { // Renders the categories combo box
     DefaultComboBoxModel<String> comboBoxModel =
-        (DefaultComboBoxModel<String>) transactionCategoryComboBox.getModel();
-    comboBoxModel.removeAllElements();
+        (DefaultComboBoxModel<String>)
+            transactionCategoryComboBox.getModel(); // Gets the combo box model
+    comboBoxModel.removeAllElements(); // Removes all elements from the combo box
     categoryController
-        .getAllCategories()
-        .forEach(
+        .getAllCategories() // Gets all categories
+        .forEach( // For each category
             category -> {
-              comboBoxModel.addElement(category.getName());
+              comboBoxModel.addElement(category.getName()); // Adds the category to the combo box
             });
   }
 }
