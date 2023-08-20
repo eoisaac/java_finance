@@ -16,7 +16,8 @@ public class CategoryController {
 
   public Optional<CategoryEntity> createCategory(String name) {
     CategoryEntity newCategory = CategoryEntity.builder().name(name).build();
-    return categoryDao.create(newCategory);
+    Optional<CategoryEntity> category = categoryDao.getByName(name);
+    return category.isPresent() ? category : categoryDao.create(newCategory);
   }
 
   public List<CategoryEntity> getAllCategories() {

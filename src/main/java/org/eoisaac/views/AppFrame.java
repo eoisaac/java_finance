@@ -6,12 +6,15 @@ import org.eoisaac.model.entities.CategoryEntity;
 import org.eoisaac.model.entities.TransactionEntity;
 import org.eoisaac.model.entities.TransactionSummary;
 import org.eoisaac.model.entities.TransactionType;
+import org.eoisaac.utils.CurrencyUtils;
 import org.eoisaac.utils.DateUtils;
 import org.eoisaac.utils.TransactionUtils;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.text.MaskFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.*;
@@ -27,7 +30,6 @@ public class AppFrame extends JFrame {
   private final TransactionController transactionController;
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private String[] comboBoxOptions = {"Opção 1", "Opção 2", "Opção 3"};
 
   private List<TransactionEntity> transactions;
   private TransactionSummary transactionSummary;
@@ -45,7 +47,7 @@ public class AppFrame extends JFrame {
   private JLabel totalExpense;
   private JLabel transactionNameLabel;
   private JLabel transactionCategoryLabel;
-  private JLabel transactionValueLabel;
+  private JLabel transactionPriceLabel;
   private JLabel transactionEntryDateLabel;
   private JLabel totalIncomeLabel;
   private JLabel frameTitle;
@@ -57,7 +59,7 @@ public class AppFrame extends JFrame {
   private JSeparator jSeparator1;
   private JTextField transactionNameField;
   private JLabel totalIncome;
-  private JTextField transactionValueField;
+  private JTextField transactionPriceField;
   /** Creates new form AppFrame */
   public AppFrame() {
     transactionController = new TransactionController();
@@ -127,8 +129,8 @@ public class AppFrame extends JFrame {
     transactionCategoryLabel = new JLabel();
     transactionCategoryComboBox = new JComboBox<>();
 
-    transactionValueLabel = new JLabel();
-    transactionValueField = new JTextField();
+    transactionPriceLabel = new JLabel();
+    transactionPriceField = new JTextField();
 
     transactionEntryDateLabel = new JLabel();
     transactionEntryDateField = new JFormattedTextField();
@@ -138,8 +140,8 @@ public class AppFrame extends JFrame {
 
     createTransactionButton = new JButton();
 
-    jSeparator1 = new JSeparator(); // Separator
-    transactionsTablePanel = new JScrollPane(); // Scro
+    jSeparator1 = new JSeparator();
+    transactionsTablePanel = new JScrollPane();
     transactionsTable = new JTable();
 
     deleteTransactionButton = new JButton();
@@ -171,13 +173,14 @@ public class AppFrame extends JFrame {
 
     // Transaction Value
     transactionCategoryComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-    transactionCategoryComboBox.setModel(new DefaultComboBoxModel<>(comboBoxOptions));
+    transactionCategoryComboBox.setModel(new DefaultComboBoxModel<>());
     transactionCategoryComboBox.setEditable(true);
 
-    transactionValueLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
-    transactionValueLabel.setText("Valor");
+    // Transaction Price
+    transactionPriceLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionPriceLabel.setText("Valor");
 
-    transactionValueField.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
+    transactionPriceField.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
 
     // Transaction Entry Date
     transactionEntryDateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
@@ -229,7 +232,7 @@ public class AppFrame extends JFrame {
                             .createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(transactionNameField)
                             .addComponent(transactionCategoryComboBox)
-                            .addComponent(transactionValueField)
+                            .addComponent(transactionPriceField)
                             .addGroup(
                                 transactionFormGroupLayout
                                     .createSequentialGroup()
@@ -238,7 +241,7 @@ public class AppFrame extends JFrame {
                                             .createParallelGroup(GroupLayout.Alignment.LEADING)
                                             .addComponent(transactionNameLabel)
                                             .addComponent(transactionCategoryLabel)
-                                            .addComponent(transactionValueLabel)
+                                            .addComponent(transactionPriceLabel)
                                             .addComponent(transactionEntryDateLabel)
                                             .addComponent(
                                                 transactionEntryDateField,
@@ -297,10 +300,10 @@ public class AppFrame extends JFrame {
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                     .addGap(18, 18, 18)
-                    .addComponent(transactionValueLabel)
+                    .addComponent(transactionPriceLabel)
                     .addGap(6, 6, 6)
                     .addComponent(
-                        transactionValueField,
+                        transactionPriceField,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
@@ -330,7 +333,7 @@ public class AppFrame extends JFrame {
     transactionsTable.setModel(
         new DefaultTableModel(
             new Object[][] {},
-            new String[] {"Nome", "Classificação", "valor", "Data", "Cadastro"}));
+            new String[] {"Tipo", "Nome", "Classificação", "valor", "Data", "Cadastro"}));
     transactionsTablePanel.setViewportView(transactionsTable);
 
     deleteTransactionButton.setText("DEL");
@@ -388,11 +391,12 @@ public class AppFrame extends JFrame {
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(totalIncome)
-                                                    .addGap(75, 75, 75)
+                                                    .addGap(64, 64, 64)
                                                     .addComponent(totalExpenseLabel)
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(totalExpense)
+                                                    .addGap(24, 24, 24)
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED,
                                                         GroupLayout.DEFAULT_SIZE,
@@ -401,7 +405,7 @@ public class AppFrame extends JFrame {
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(totalBalance)
-                                                    .addGap(47, 47, 47)
+                                                    .addGap(24, 24, 24)
                                                     .addComponent(deleteTransactionButton))
                                             .addComponent(
                                                 transactionsTablePanel,
@@ -463,7 +467,7 @@ public class AppFrame extends JFrame {
 
   private void resetFormFields() {
     transactionNameField.setText("");
-    transactionValueField.setText("");
+    transactionPriceField.setText("");
     transactionEntryDateField.setText("");
     transactionCategoryComboBox.setSelectedIndex(0);
   }
@@ -474,12 +478,13 @@ public class AppFrame extends JFrame {
     hasTransactions = !transactions.isEmpty();
 
     handleRenderTransactionsTable();
+    handleRenderCategoriesComboBox();
     handleRenderTransactionSummary();
   }
 
   private void handleNewTransactionFormSubmit(ActionEvent evt) {
     String transactionName = transactionNameField.getText();
-    String transactionValue = transactionValueField.getText();
+    String transactionValue = transactionPriceField.getText();
     String entryDate = transactionEntryDateField.getText();
     String selectedCategory = (String) transactionCategoryComboBox.getSelectedItem();
     boolean isIncome = transactionTypeIncomeRadioButton.isSelected();
@@ -522,16 +527,31 @@ public class AppFrame extends JFrame {
   private void handleRenderTransactionsTable() {
     DefaultTableModel tableModel = (DefaultTableModel) transactionsTable.getModel();
     tableModel.setRowCount(0);
+
+    transactionsTable.setDefaultRenderer(Object.class, new TransactionTableRowRenderer(0));
     transactions.forEach(
         transaction -> {
           tableModel.addRow(
               new Object[] {
+                transaction.getType(),
                 transaction.getName(),
                 transaction.getCategory().getName(),
-                transaction.getValue(),
-                transaction.getEntryDate(),
-                transaction.getCreatedAt()
+                CurrencyUtils.formatCurrency(transaction.getValue()),
+                DateUtils.convertInstantToString(transaction.getEntryDate()),
+                DateUtils.convertInstantToString(transaction.getCreatedAt()),
               });
         });
+  }
+
+  private void handleRenderCategoriesComboBox() {
+    DefaultComboBoxModel<String> comboBoxModel =
+        (DefaultComboBoxModel<String>) transactionCategoryComboBox.getModel();
+    comboBoxModel.removeAllElements();
+    categoryController
+        .getAllCategories()
+        .forEach(
+            category -> {
+              comboBoxModel.addElement(category.getName());
+            });
   }
 }

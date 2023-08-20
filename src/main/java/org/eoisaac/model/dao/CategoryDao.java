@@ -60,6 +60,24 @@ public class CategoryDao {
     }
   }
 
+  public Optional<CategoryEntity> getByName(String name) {
+    Session session = null;
+    try {
+      session = DatabaseSession.get();
+      if (session != null) {
+        return session
+            .createQuery("from CategoryEntity where name = :name", CategoryEntity.class)
+            .setParameter("name", name)
+            .uniqueResultOptional();
+      } else {
+        System.out.println("Session not created");
+        return Optional.empty();
+      }
+    } finally {
+      DatabaseSession.close(session);
+    }
+  }
+
   public List<CategoryEntity> getAll() {
     Session session = null;
     try {

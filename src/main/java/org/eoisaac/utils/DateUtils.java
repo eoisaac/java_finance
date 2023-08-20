@@ -19,6 +19,12 @@ public class DateUtils {
     return null;
   }
 
+  public static String convertInstantToString(Instant instant) {
+    Date date = Date.from(instant);
+    LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    return localDate.format(dateFormatter);
+  }
+
   private static LocalDate parseDateString(String dateString) {
     try {
       return LocalDate.parse(dateString, dateFormatter);
