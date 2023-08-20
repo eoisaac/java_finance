@@ -13,14 +13,15 @@ import org.eoisaac.utils.TransactionUtils;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.text.MaskFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author saulo.cabral
@@ -328,36 +329,46 @@ public class AppFrame extends JFrame {
                     .addComponent(createTransactionButton)
                     .addContainerGap(73, Short.MAX_VALUE)));
 
+    // Transactions Table
     transactionsTable.setBorder(BorderFactory.createEtchedBorder());
     transactionsTable.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     transactionsTable.setModel(
         new DefaultTableModel(
             new Object[][] {},
-            new String[] {"Tipo", "Nome", "Classificação", "valor", "Data", "Cadastro"}));
+            new String[] {"ID", "Tipo", "Nome", "Classificação", "valor", "Data", "Cadastro"}));
     transactionsTablePanel.setViewportView(transactionsTable);
 
+    transactionsTable.addMouseListener(
+        new MouseAdapter() {
+          public void mouseClicked(MouseEvent evt) {
+            handleSelectedTransaction(evt);
+          }
+        });
+
+    // Delete Transaction Button
     deleteTransactionButton.setText("DEL");
 
     totalIncomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
-    totalIncomeLabel.setText("Recebido (R$):");
+    totalIncomeLabel.setText("Recebido:");
 
     totalIncome.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalIncome.setText("0.00");
 
     totalExpenseLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
-    totalExpenseLabel.setText("Gastos (R$):");
+    totalExpenseLabel.setText("Gastos:");
 
     totalExpense.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalExpense.setText("0.00");
 
     totalBalanceLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
-    totalBalanceLabel.setText("Diferença (R$):");
+    totalBalanceLabel.setText("Diferença:");
 
     totalBalance.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // NOI18N
     totalBalance.setText("0.00");
 
     frameTitle.setFont(new Font("Segoe UI", Font.BOLD, 24)); // NOI18N
     frameTitle.setText("Finanças Anual Seu José");
+    createTransactionButton.addActionListener(this::handleNewTransactionFormSubmit);
 
     GroupLayout transactionsTableGroupLayout = new GroupLayout(mainPanel);
     mainPanel.setLayout(transactionsTableGroupLayout);
@@ -396,7 +407,6 @@ public class AppFrame extends JFrame {
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(totalExpense)
-                                                    .addGap(24, 24, 24)
                                                     .addPreferredGap(
                                                         LayoutStyle.ComponentPlacement.RELATED,
                                                         GroupLayout.DEFAULT_SIZE,
@@ -472,14 +482,19 @@ public class AppFrame extends JFrame {
     transactionCategoryComboBox.setSelectedIndex(0);
   }
 
+  private void deleteTransaction(UUID transactionId) {
+    transactionController.deleteTransaction(transactionId);
+    updateTransactionsData();
+  }
+
   private void updateTransactionsData() {
     transactions = transactionController.getAllTransactions(); // or use local variable as cache
 
     hasTransactions = !transactions.isEmpty();
 
-    handleRenderTransactionsTable();
-    handleRenderCategoriesComboBox();
-    handleRenderTransactionSummary();
+    renderTransactionsTable();
+    renderCategoriesComboBox();
+    renderTransactionsSummary();
   }
 
   private void handleNewTransactionFormSubmit(ActionEvent evt) {
@@ -517,22 +532,34 @@ public class AppFrame extends JFrame {
     resetFormFields();
   }
 
-  public void handleRenderTransactionSummary() {
-    transactionSummary = TransactionUtils.calculateTransactionSummary(transactions);
-    totalIncome.setText(transactionSummary.getTotalIncome() + "");
-    totalExpense.setText(transactionSummary.getTotalExpense() + "");
-    totalBalance.setText(transactionSummary.getTotalBalance() + "");
+  public void handleSelectedTransaction(MouseEvent evt) {
+    int selectedRow = transactionsTable.getSelectedRow();
+    DefaultTableModel tableModel = (DefaultTableModel) transactionsTable.getModel();
+    UUID selectedTransactionId = (UUID) tableModel.getValueAt(selectedRow, 0);
+
+    deleteTransaction(selectedTransactionId);
   }
 
-  private void handleRenderTransactionsTable() {
+  public void renderTransactionsSummary() {
+    transactionSummary = TransactionUtils.calculateTransactionSummary(transactions);
+    totalIncome.setText(CurrencyUtils.formatCurrency(transactionSummary.getTotalIncome()));
+    totalExpense.setText(CurrencyUtils.formatCurrency(transactionSummary.getTotalExpense()));
+    totalBalance.setText(CurrencyUtils.formatCurrency(transactionSummary.getTotalBalance()));
+  }
+
+  private void renderTransactionsTable() {
     DefaultTableModel tableModel = (DefaultTableModel) transactionsTable.getModel();
     tableModel.setRowCount(0);
 
-    transactionsTable.setDefaultRenderer(Object.class, new TransactionTableRowRenderer(0));
+    List<String> hiddenColumnIndexes = List.of("ID", "Tipo");
+    transactionsTable.setDefaultRenderer(
+        Object.class, new TransactionTableRowRenderer(hiddenColumnIndexes));
+
     transactions.forEach(
         transaction -> {
           tableModel.addRow(
               new Object[] {
+                transaction.getId(),
                 transaction.getType(),
                 transaction.getName(),
                 transaction.getCategory().getName(),
@@ -543,7 +570,7 @@ public class AppFrame extends JFrame {
         });
   }
 
-  private void handleRenderCategoriesComboBox() {
+  private void renderCategoriesComboBox() {
     DefaultComboBoxModel<String> comboBoxModel =
         (DefaultComboBoxModel<String>) transactionCategoryComboBox.getModel();
     comboBoxModel.removeAllElements();

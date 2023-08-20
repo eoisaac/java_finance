@@ -3,6 +3,7 @@ package org.eoisaac.controllers;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.eoisaac.model.dao.TransactionDao;
 import org.eoisaac.model.entities.CategoryEntity;
@@ -27,6 +28,10 @@ public class TransactionController {
             .category(category)
             .build();
     return transactionDao.create(newTransaction);
+  }
+
+  public Boolean deleteTransaction(UUID id) {
+    return transactionDao.delete(id);
   }
 
   public List<TransactionEntity> getAllTransactions() {
