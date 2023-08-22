@@ -1,10 +1,9 @@
 package org.eoisaac.controllers;
 
-import org.eoisaac.model.dao.CategoryDao;
-import org.eoisaac.model.entities.CategoryEntity;
-
 import java.util.List;
 import java.util.Optional;
+import org.eoisaac.model.dao.CategoryDao;
+import org.eoisaac.model.entities.CategoryEntity;
 
 public class CategoryController {
 

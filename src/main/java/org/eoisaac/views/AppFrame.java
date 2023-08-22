@@ -1,5 +1,16 @@
 package org.eoisaac.views;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.Instant;
+import java.util.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
 import org.eoisaac.controllers.CategoryController;
 import org.eoisaac.controllers.TransactionController;
 import org.eoisaac.model.entities.CategoryEntity;
@@ -9,18 +20,6 @@ import org.eoisaac.model.entities.TransactionType;
 import org.eoisaac.utils.CurrencyUtils;
 import org.eoisaac.utils.DateUtils;
 import org.eoisaac.utils.TransactionUtils;
-
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.text.MaskFormatter;
-import java.awt.event.ActionEvent;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.time.Instant;
-import java.util.*;
-import java.util.List;
 
 /**
  * @author saulo.cabral
@@ -178,11 +177,6 @@ public class AppFrame extends JFrame {
 
     alertMessagesContainer.setBackground(new Color(0, 0, 0));
     alertMessagesContainer.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-
-    alertMessage.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
-    alertMessage.setText("Nenhuma transação cadastrada");
-
-    alertMessagesContainer.add(alertMessage);
 
     // Transaction Name
     transactionNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18)); // NOI18N
@@ -394,64 +388,66 @@ public class AppFrame extends JFrame {
     frameTitle.setFont(new Font("Segoe UI", Font.BOLD, 24)); // NOI18N
     frameTitle.setText("Finanças Anual Seu José");
 
+    alertMessage.setFont(new Font("Segoe UI", Font.BOLD, 14)); // NOI18N
+    alertMessage.setForeground(new Color(255, 102, 102));
+
+    alertMessagesContainer.add(alertMessage);
+
     GroupLayout mainLayout = new GroupLayout(mainPanel);
     mainPanel.setLayout(mainLayout);
-    //    transactionFormPanel.setBackground(new Color(0, 204, 255));
     mainLayout.setHorizontalGroup(
         mainLayout
             .createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(
                 mainLayout
                     .createSequentialGroup()
+                    .addContainerGap()
                     .addGroup(
                         mainLayout
-                            .createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                            .addComponent(
+                                transactionFormPanel,
+                                GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.PREFERRED_SIZE)
+                            .addComponent(
+                                alertMessage,
+                                GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(
+                        mainLayout
+                            .createParallelGroup(GroupLayout.Alignment.LEADING, false)
                             .addGroup(
                                 mainLayout
                                     .createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        transactionFormPanel,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(totalIncomeLabel)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(
-                                        mainLayout
-                                            .createParallelGroup(
-                                                GroupLayout.Alignment.TRAILING, false)
-                                            .addGroup(
-                                                mainLayout
-                                                    .createSequentialGroup()
-                                                    .addComponent(totalIncomeLabel)
-                                                    .addPreferredGap(
-                                                        LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(totalIncome)
-                                                    .addGap(20, 20, 20)
-                                                    .addComponent(totalExpenseLabel)
-                                                    .addPreferredGap(
-                                                        LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(totalExpense)
-                                                    .addPreferredGap(
-                                                        LayoutStyle.ComponentPlacement.RELATED,
-                                                        GroupLayout.DEFAULT_SIZE,
-                                                        Short.MAX_VALUE)
-                                                    .addComponent(totalBalanceLabel)
-                                                    .addPreferredGap(
-                                                        LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(totalBalance)
-                                                    .addGap(20, 20, 20)
-                                                    .addComponent(deleteTransactionButton))
-                                            .addComponent(
-                                                transactionsTablePanel,
-                                                GroupLayout.PREFERRED_SIZE,
-                                                592,
-                                                GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(
-                                mainLayout
-                                    .createSequentialGroup()
-                                    .addGap(363, 363, 363)
-                                    .addComponent(frameTitle)))
+                                    .addComponent(totalIncome)
+                                    .addGap(20, 20, 20)
+                                    .addComponent(totalExpenseLabel)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(totalExpense)
+                                    .addPreferredGap(
+                                        LayoutStyle.ComponentPlacement.RELATED,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)
+                                    .addComponent(totalBalanceLabel)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(totalBalance)
+                                    .addGap(20, 20, 20)
+                                    .addComponent(deleteTransactionButton))
+                            .addComponent(
+                                transactionsTablePanel,
+                                GroupLayout.PREFERRED_SIZE,
+                                600,
+                                GroupLayout.PREFERRED_SIZE)))
+            .addGroup(
+                mainLayout
+                    .createSequentialGroup()
+                    .addGap(363, 363, 363)
+                    .addComponent(frameTitle)
                     .addContainerGap(16, Short.MAX_VALUE)));
     mainLayout.setVerticalGroup(
         mainLayout
@@ -481,9 +477,9 @@ public class AppFrame extends JFrame {
                             .addComponent(totalExpenseLabel)
                             .addComponent(totalExpense)
                             .addComponent(totalBalanceLabel)
-                            .addComponent(totalBalance))
+                            .addComponent(totalBalance)
+                            .addComponent(alertMessage))
                     .addContainerGap()));
-
     GroupLayout layout = new GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -528,8 +524,10 @@ public class AppFrame extends JFrame {
 
     transactionsTable.setVisible(
         hasTransactions); // Shows the transactions table if there are transactions
-    alertMessagesContainer.setVisible(
-        !hasTransactions); // Shows the alert message if there are no transactions
+
+    if (!hasTransactions) {
+      alertMessage.setText("Nenhuma transação cadastrada!");
+    }
   }
 
   private void handleNewTransactionFormSubmit(

@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.eoisaac.model.dao.TransactionDao;
 import org.eoisaac.model.entities.CategoryEntity;
 import org.eoisaac.model.entities.TransactionEntity;
