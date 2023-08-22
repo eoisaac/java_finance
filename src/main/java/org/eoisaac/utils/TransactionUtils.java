@@ -5,6 +5,13 @@ import org.eoisaac.model.entities.TransactionEntity;
 import org.eoisaac.model.entities.TransactionSummary;
 import org.eoisaac.model.entities.TransactionType;
 
+/*
+* That class is responsible for calculating the transaction summary. It receives a list of transactions, and returns a
+* transaction summary. The transaction summary contains the total income, the total expense, and the total balance.
+* To calculate the values, the method uses the calculateTotalPriceByType method, which receives a list of transactions,
+* and a transaction type. It filters the transactions by type, maps the transactions to their price, and sums the prices.
+* */
+
 public class TransactionUtils { // Utility class for transaction calculations
   public static TransactionSummary calculateTransactionSummary(List<TransactionEntity> transactions) { // Calculates the transaction summary
     float totalIncome = calculateTotalPriceByType(transactions, TransactionType.INCOME); // Calculates the total income

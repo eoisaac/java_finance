@@ -9,6 +9,9 @@ import org.eoisaac.model.entities.CategoryEntity;
 import org.eoisaac.model.entities.TransactionEntity;
 import org.eoisaac.model.entities.TransactionType;
 
+/*
+* That class is responsible for controlling the transaction DAO.
+* */
 public class TransactionController {
   TransactionDao transactionDao; // Transaction DAO
 

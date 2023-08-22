@@ -5,6 +5,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+/*
+* That class is responsible for creating and closing the database session factory and session.
+* It uses the SessionFactory class to create the session factory, and the Session class to create the session.
+* So, it has a method to create the session factory, a method to get the session, a method to close the session,
+* and a method to close the session factory.
+* */
+
 @NoArgsConstructor
 public class DatabaseSession {
   private static final SessionFactory sessionFactory = buildSessionFactory();

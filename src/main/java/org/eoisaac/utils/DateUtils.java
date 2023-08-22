@@ -7,6 +7,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
+/*
+* That class is responsible for formatting a string to an instant, and an instant to a string. It uses the DateTimeFormatter
+* class to format the string, and the LocalDate class to parse the string to a local date. It also uses the Date class to
+* convert the local date to a date, and the Instant class to convert the date to an instant. So, it receives a string, and
+* returns an instant. For example, if the string is 01/01/2021, it returns 2021-01-01T00:00:00Z.
+* It also receives an instant, and returns a string. For example, if the instant is 2021-01-01T00:00:00Z, it returns 01/01/2021.
+* */
+
 public class DateUtils { // Utility class for date formatting
   private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Sets the date format
 

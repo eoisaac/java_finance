@@ -7,6 +7,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import org.eoisaac.model.entities.TransactionType;
 
+/*
+* That class is responsible for rendering the table rows. It overrides the getTableCellRendererComponent method, which
+* is called by the table to render the cell. It checks if the column name is in the hiddenColumnNames list. If it is,
+* it hides the column (the column is not visible, but it still exists). If it is not, it checks the transaction type.
+* If is INCOME, set the background color to a light green. If it is EXPENSE, set the background color to a light red.
+* If the row is selected, set the background color to a light blue.
+* I found this solution on StackOverflow: https://stackoverflow.com/questions/3875607/change-the-background-color-of-a-row-in-a-jtable
+* */
+
 public class TransactionTableRowRenderer extends DefaultTableCellRenderer {
     private final List<String> hiddenColumnNames; // List of column names to hide
 
