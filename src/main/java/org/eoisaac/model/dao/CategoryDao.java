@@ -26,24 +26,6 @@ public class CategoryDao {
     }
   }
 
-  public CategoryEntity update(CategoryEntity entity) { // Update category
-    Session session = null; // Initialize session
-    try {
-      session = DatabaseSession.get(); // Get session
-      if (session != null) { // Check if session is not null
-        session.beginTransaction(); // Begin transaction
-        session.merge(entity); // Merge entity
-        session.getTransaction().commit(); // Commit transaction
-        return entity; // Return entity
-      } else {
-        System.out.println("Session not created");
-        return null; // Return null
-      }
-    } finally {
-      DatabaseSession.close(session); // Close session
-    }
-  }
-
   public boolean delete(CategoryEntity entity) {
     Session session = null; // Initialize session
     try {

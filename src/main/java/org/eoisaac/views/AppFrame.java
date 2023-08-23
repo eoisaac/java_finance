@@ -165,7 +165,6 @@ public class AppFrame extends JFrame {
     // Create Transaction Button
     createTransactionButton.setFont(new Font("Segoe UI", Font.PLAIN, 24));
     createTransactionButton.setText("CADASTRAR");
-    createTransactionButton.setEnabled(false);
 
     deleteTransactionButton.setEnabled(false);
 
@@ -462,6 +461,38 @@ public class AppFrame extends JFrame {
     }
   }
 
+  private boolean validateAndExtractFormFields() {
+    String transactionName = transactionNameField.getText();
+    String transactionValue = transactionPriceField.getText();
+    String entryDate = transactionEntryDateField.getText();
+    String selectedCategory = (String) transactionCategoryComboBox.getSelectedItem();
+    boolean isIncome = transactionTypeIncomeRadioButton.isSelected();
+
+    if (transactionName.isEmpty()) {
+      alertMessage.setText("O nome da transação não pode ser vazio!");
+      return false;
+    }
+
+    if (transactionValue.isEmpty()) {
+      alertMessage.setText("O valor da transação não pode ser vazio!");
+      return false;
+    }
+
+    if (entryDate.isEmpty()) {
+      alertMessage.setText("A data da transação não pode ser vazia!");
+      return false;
+    }
+
+    if (selectedCategory.isEmpty()) {
+      alertMessage.setText("A categoria da transação não pode ser vazia!");
+      return false;
+    }
+
+    // Additional validation checks if needed
+
+    return true;
+  }
+
   private void handleNewTransactionFormSubmit(
       ActionEvent evt) { // Handles the new transaction form submit
     String transactionName = transactionNameField.getText(); // Gets the transaction name
@@ -469,10 +500,12 @@ public class AppFrame extends JFrame {
     String entryDate = transactionEntryDateField.getText(); // Gets the transaction entry date
     String selectedCategory =
         (String) transactionCategoryComboBox.getSelectedItem(); // Gets the selected category
+
     boolean isIncome =
         transactionTypeIncomeRadioButton.isSelected(); // Checks if the transaction is income
     TransactionType transactionType =
         isIncome ? TransactionType.INCOME : TransactionType.EXPENSE; // Sets the transaction type
+
     Instant entryDateInstant =
         DateUtils.convertStringToInstant(entryDate); // Converts the entry date to an instant
     float transactionValueFloat =
@@ -482,7 +515,7 @@ public class AppFrame extends JFrame {
         categoryController.createCategory(selectedCategory); // Creates the category
 
     if (category.isEmpty()) { // If the category was not created
-      System.out.println("Category not created");
+      alertMessage.setText("Ocorreu um erro ao criar a categoria, tente novamente mais tarde!");
       return;
     }
 
@@ -495,16 +528,15 @@ public class AppFrame extends JFrame {
             category.get());
 
     if (createdTransaction.isEmpty()) { // If the transaction was not created
-      System.out.println("Transaction not created");
+      alertMessage.setText("Ocorreu um erro ao criar a transação, tente novamente mais tarde!");
       return;
     }
 
-    System.out.println("Transaction created");
-
     transactions.add(createdTransaction.get()); // Adds the created transaction to the list
-    updateTransactionsData(); // Updates the transactions data on the table with the created
-    // transaction
-    //    resetFormFields();
+    updateTransactionsData(); // Updates the transactions data on the table with the new one
+
+    alertMessage.setText(""); // Resets the alert message
+    resetFormFields();
   }
 
   public void handleSelectedTransaction(MouseEvent evt) { // Handles the selected transaction
