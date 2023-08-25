@@ -9,9 +9,7 @@ import org.hibernate.Session;
 public class CategoryDao {
 
   public Optional<CategoryEntity> create(CategoryEntity entity) { // Create category
-    Session session = null; // Initialize session
-    try {
-      session = DBSessionFactory.getSession(); // Get session
+    try (Session session = DBSessionFactory.getSession()) { // Get session using try-with-resources
       if (session != null) { // Check if session is not null
         session.beginTransaction(); // Begin transaction
         session.persist(entity); // Persist entity
@@ -22,17 +20,13 @@ public class CategoryDao {
         return Optional.empty(); // Return empty optional
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return Optional.empty(); // Return empty optional
-    } finally {
-      DBSessionFactory.closeSession(session); // Close session
     }
   }
 
-
   public Optional<CategoryEntity> getByName(String name) { // Get category by name
-    Session session = null; // Initialize session
-    try {
-      session = DBSessionFactory.getSession(); // Get session
+    try (Session session = DBSessionFactory.getSession()) { // Get session using try-with-resources
       if (session != null) { // Check if session is not null
         return session // Return session
             .createQuery(
@@ -43,15 +37,11 @@ public class CategoryDao {
         System.out.println("Session not created");
         return Optional.empty(); // Return empty optional
       }
-    } finally {
-      DBSessionFactory.closeSession(session); // Close session
     }
   }
 
   public List<CategoryEntity> getAll() { // Get all categories
-    Session session = null; // Initialize session
-    try {
-      session = DBSessionFactory.getSession(); // Get session
+    try (Session session = DBSessionFactory.getSession()) { // Get session using try-with-resources
       if (session != null) { // Check if session is not null
         return session
             .createQuery("from CategoryEntity", CategoryEntity.class)
@@ -60,8 +50,6 @@ public class CategoryDao {
         System.out.println("Session not created");
         return null; // or return an empty list
       }
-    } finally {
-      DBSessionFactory.closeSession(session); // Close session
     }
   }
 }
