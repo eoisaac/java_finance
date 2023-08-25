@@ -14,7 +14,7 @@ import org.hibernate.cfg.Configuration;
 public class DBSessionFactory {
   private static final SessionFactory sessionFactory = buildSessionFactory();
 
-  private static SessionFactory buildSessionFactory() {
+  public static SessionFactory buildSessionFactory() {
     try {
       Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
       return configuration.buildSessionFactory();
