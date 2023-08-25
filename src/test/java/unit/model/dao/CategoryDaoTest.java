@@ -30,7 +30,7 @@ public class CategoryDaoTest {
     assertFalse("Categories should not be empty", categories.isEmpty());
     
     int TOTAL_DB_CATEGORIES = 8; // Based in the resources/data/seed.sql file
-    assertEquals("Categories size should be 5", TOTAL_DB_CATEGORIES, categories.size());
+    assertEquals("Categories size should be 8", TOTAL_DB_CATEGORIES, categories.size());
   }
   
   @Test
