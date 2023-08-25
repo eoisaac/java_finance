@@ -2,7 +2,7 @@ package org.eoisaac.model.dao;
 
 import java.util.List;
 import java.util.Optional;
-import org.eoisaac.config.database.DatabaseSession;
+import org.eoisaac.tools.database.DatabaseSession;
 import org.eoisaac.model.entities.CategoryEntity;
 import org.hibernate.Session;
 
@@ -26,23 +26,6 @@ public class CategoryDao {
     }
   }
 
-  public boolean delete(CategoryEntity entity) {
-    Session session = null; // Initialize session
-    try {
-      session = DatabaseSession.get(); // Get session
-      if (session != null) { // Check if session is not null
-        session.beginTransaction(); // Begin transaction
-        session.remove(entity); // Remove entity
-        session.getTransaction().commit(); // Commit transaction
-        return true; // Return true
-      } else {
-        System.out.println("Session not created");
-        return false; // Return false
-      }
-    } finally {
-      DatabaseSession.close(session); // Close session
-    }
-  }
 
   public Optional<CategoryEntity> getByName(String name) { // Get category by name
     Session session = null; // Initialize session

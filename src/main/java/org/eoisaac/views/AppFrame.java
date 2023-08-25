@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
@@ -140,7 +142,6 @@ public class AppFrame extends JFrame {
       MaskFormatter mask = new MaskFormatter("##/##/####");
       mask.install(transactionEntryDateField);
     } catch (Exception e) {
-      System.out.println("Error formatting date field mask");
       e.printStackTrace();
     }
     transactionEntryDateField.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -466,7 +467,6 @@ public class AppFrame extends JFrame {
     String transactionValue = transactionPriceField.getText();
     String entryDate = transactionEntryDateField.getText();
     String selectedCategory = (String) transactionCategoryComboBox.getSelectedItem();
-    boolean isIncome = transactionTypeIncomeRadioButton.isSelected();
 
     if (transactionName.isEmpty()) {
       alertMessage.setText("O nome da transação não pode ser vazio!");
@@ -483,12 +483,18 @@ public class AppFrame extends JFrame {
       return false;
     }
 
+    String pattern = "\\d{2}/\\d{2}/\\d{4}";
+    Pattern regex = Pattern.compile(pattern);
+
+    if (regex.matcher(entryDate).matches()) {
+      alertMessage.setText("Selecione uma data válida!");
+      return false;
+    }
+
     if (selectedCategory.isEmpty()) {
       alertMessage.setText("A categoria da transação não pode ser vazia!");
       return false;
     }
-
-    // Additional validation checks if needed
 
     return true;
   }
@@ -506,37 +512,42 @@ public class AppFrame extends JFrame {
     TransactionType transactionType =
         isIncome ? TransactionType.INCOME : TransactionType.EXPENSE; // Sets the transaction type
 
-    Instant entryDateInstant =
-        DateUtils.convertStringToInstant(entryDate); // Converts the entry date to an instant
-    float transactionValueFloat =
-        Float.parseFloat(transactionValue); // Converts the transaction value to a float
+    boolean isValid = validateAndExtractFormFields();
 
-    Optional<CategoryEntity> category =
-        categoryController.createCategory(selectedCategory); // Creates the category
+    if (isValid) {
+      Instant entryDateInstant =
+              DateUtils.convertStringToInstant(entryDate); // Converts the entry date to an instant
+      float transactionValueFloat =
+              Float.parseFloat(transactionValue); // Converts the transaction value to a float
 
-    if (category.isEmpty()) { // If the category was not created
-      alertMessage.setText("Ocorreu um erro ao criar a categoria, tente novamente mais tarde!");
-      return;
+      Optional<CategoryEntity> category =
+              categoryController.createCategory(selectedCategory); // Creates the category
+
+      if (category.isEmpty()) { // If the category was not created
+        alertMessage.setText("Ocorreu um erro ao criar a categoria, tente novamente mais tarde!");
+        return;
+      }
+
+      Optional<TransactionEntity> createdTransaction = // Creates the transaction
+              transactionController.createTransaction(
+                      transactionName,
+                      transactionType,
+                      transactionValueFloat,
+                      entryDateInstant,
+                      category.get());
+
+      if (createdTransaction.isEmpty()) { // If the transaction was not created
+        alertMessage.setText("Ocorreu um erro ao criar a transação, tente novamente mais tarde!");
+        return;
+      }
+
+      transactions.add(createdTransaction.get()); // Adds the created transaction to the list
+      updateTransactionsData(); // Updates the transactions data on the table with the new one
+
+      alertMessage.setText(""); // Resets the alert message
+      resetFormFields();
     }
 
-    Optional<TransactionEntity> createdTransaction = // Creates the transaction
-        transactionController.createTransaction(
-            transactionName,
-            transactionType,
-            transactionValueFloat,
-            entryDateInstant,
-            category.get());
-
-    if (createdTransaction.isEmpty()) { // If the transaction was not created
-      alertMessage.setText("Ocorreu um erro ao criar a transação, tente novamente mais tarde!");
-      return;
-    }
-
-    transactions.add(createdTransaction.get()); // Adds the created transaction to the list
-    updateTransactionsData(); // Updates the transactions data on the table with the new one
-
-    alertMessage.setText(""); // Resets the alert message
-    resetFormFields();
   }
 
   public void handleSelectedTransaction(MouseEvent evt) { // Handles the selected transaction

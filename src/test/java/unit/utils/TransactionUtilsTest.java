@@ -21,7 +21,7 @@ public class TransactionUtilsTest {
     private float expectedTotalBalance;
 
     @BeforeEach
-    public void setUp() {
+    public void setup() {
         createTransactions();
         expectedTotalBalance = expectedTotalIncome - expectedTotalExpense;
     }

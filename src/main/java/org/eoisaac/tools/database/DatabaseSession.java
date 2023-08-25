@@ -1,4 +1,4 @@
-package org.eoisaac.config.database;
+package org.eoisaac.tools.database;
 
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;

@@ -3,7 +3,7 @@ package org.eoisaac.model.dao;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.eoisaac.config.database.DatabaseSession;
+import org.eoisaac.tools.database.DatabaseSession;
 import org.eoisaac.model.entities.TransactionEntity;
 import org.hibernate.Session;
 
