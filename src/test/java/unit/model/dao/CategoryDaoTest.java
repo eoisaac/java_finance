@@ -1,50 +1,47 @@
 package unit.model.dao;
 
+import static org.junit.Assert.*;
+
+import java.util.List;
+import java.util.Optional;
 import org.eoisaac.model.dao.CategoryDao;
 import org.eoisaac.model.entities.CategoryEntity;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import java.util.List;
-
-import java.util.Optional;
 
 public class CategoryDaoTest {
 
   private final CategoryDao categoryDao = new CategoryDao();
 
-  private final String expectedNameA = "category_1";
-  private final String expectedNameB = "category_2";
-
-  @BeforeEach
-  public void setup() {
-
-  }
-
-  @Test
-  public void createCategory() {
-    Optional<CategoryEntity> category = categoryDao.create(CategoryEntity.builder().name(expectedNameA).build());
-
-    assertTrue(category.isPresent());
-    assertEquals(category.get().getName(), expectedNameA);
-  }
-
   @Test
   public void getCategoryByName() {
-    Optional<CategoryEntity> category = categoryDao.getByName(expectedNameA);
+    String DEFAULT_CATEGORY_NAME = "OUTROS"; // Based in the resources/data/seed.sql file
+    Optional<CategoryEntity> category = categoryDao.getByName(DEFAULT_CATEGORY_NAME);
 
     assertTrue(category.isPresent());
-    assertEquals("", expectedNameA, category.get().getName());
+    assertEquals("Category name should be OUTROS", DEFAULT_CATEGORY_NAME, category.get().getName());
   }
-
+  
+  
   @Test
   public void getAllCategories() {
     List<CategoryEntity> categories = categoryDao.getAll();
 
-    assertNotNull(categories);
-    assertEquals("", 2, categories.size());
+    assertNotNull("Categories should not be null", categories);
+    assertFalse("Categories should not be empty", categories.isEmpty());
+    
+    int TOTAL_DB_CATEGORIES = 8; // Based in the resources/data/seed.sql file
+    assertEquals("Categories size should be 5", TOTAL_DB_CATEGORIES, categories.size());
   }
+  
+  @Test
+  public void createCategory() {
+    String NEW_CATEGORY_NAME = "TESTING";
+    CategoryEntity newCategory = CategoryEntity.builder().name(NEW_CATEGORY_NAME).build();
+
+    Optional<CategoryEntity> createdCategory = categoryDao.create(newCategory);
+
+    assertTrue(createdCategory.isPresent());
+    assertEquals("Category name should be TESTING", NEW_CATEGORY_NAME, createdCategory.get().getName());
+  }
+
 }

@@ -18,12 +18,12 @@
         <property name="hibernate.hbm2ddl.auto">create</property>
 
         <!-- Echo all executed SQL to stdout -->
-        <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.format_sql">true</property>
+        <!--        <property name="hibernate.show_sql">true</property>-->
+        <!--        <property name="hibernate.format_sql">true</property>-->
 
         <!-- Populate database with initial data on startup -->
         <!-- Replace this line with your H2-specific data script if needed -->
-        <!-- <property name="hibernate.hbm2ddl.import_files">data/seed.sql</property> -->
+        <property name="hibernate.hbm2ddl.import_files">data/seed.sql</property>
 
         <!-- Names the annotated entity class -->
         <mapping class="org.eoisaac.model.entities.TransactionEntity"/>
