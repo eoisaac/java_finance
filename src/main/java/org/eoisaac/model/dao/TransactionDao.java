@@ -3,7 +3,7 @@ package org.eoisaac.model.dao;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.eoisaac.tools.database.DatabaseSession;
+import org.eoisaac.tools.database.DBSessionFactory;
 import org.eoisaac.model.entities.TransactionEntity;
 import org.hibernate.Session;
 
@@ -11,7 +11,7 @@ public class TransactionDao {
   public Optional<TransactionEntity> create(TransactionEntity entity) { // Create category
     Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get(); // Get session
+      session = DBSessionFactory.getSession(); // Get session
       if (session != null) { // Check if session is not null
         session.beginTransaction(); // Begin transaction
         session.persist(entity); // Persist entity
@@ -29,7 +29,7 @@ public class TransactionDao {
   public TransactionEntity update(TransactionEntity entity) { // Update category
     Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get(); // Get session
+      session = DBSessionFactory.getSession(); // Get session
       if (session != null) { // Check if session is not null
         session.beginTransaction(); // Begin transaction
         session.merge(entity); // Merge entity
@@ -40,14 +40,14 @@ public class TransactionDao {
         return null; // Return null
       }
     } finally {
-      DatabaseSession.close(session); // Close session
+      DBSessionFactory.closeSession(session); // Close session
     }
   }
 
   public boolean delete(UUID id) { // Delete category
     Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get(); // Get session
+      session = DBSessionFactory.getSession(); // Get session
       if (session != null) { // Check if session is not null
         session.beginTransaction(); // Begin transaction
         session.remove(session.byId(TransactionEntity.class).load(id)); // Remove entity
@@ -58,14 +58,14 @@ public class TransactionDao {
         return false; // Return false
       }
     } finally {
-      DatabaseSession.close(session); // Close session
+      DBSessionFactory.closeSession(session); // Close session
     }
   }
 
   public List<TransactionEntity> getAll() { // Get all categories
     Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get();
+      session = DBSessionFactory.getSession();
       if (session != null) { // Check if session is not null
         session.beginTransaction(); // Begin transaction
         return session
@@ -76,7 +76,7 @@ public class TransactionDao {
         return null; // Return null
       }
     } finally {
-      DatabaseSession.close(session); // Close session
+      DBSessionFactory.closeSession(session); // Close session
     }
   }
 }

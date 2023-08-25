@@ -2,8 +2,8 @@ package org.eoisaac.model.dao;
 
 import java.util.List;
 import java.util.Optional;
-import org.eoisaac.tools.database.DatabaseSession;
 import org.eoisaac.model.entities.CategoryEntity;
+import org.eoisaac.tools.database.DBSessionFactory;
 import org.hibernate.Session;
 
 public class CategoryDao {
@@ -11,7 +11,7 @@ public class CategoryDao {
   public Optional<CategoryEntity> create(CategoryEntity entity) { // Create category
     Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get(); // Get session
+      session = DBSessionFactory.getSession(); // Get session
       if (session != null) { // Check if session is not null
         session.beginTransaction(); // Begin transaction
         session.persist(entity); // Persist entity
@@ -23,6 +23,8 @@ public class CategoryDao {
       }
     } catch (Exception e) {
       return Optional.empty(); // Return empty optional
+    } finally {
+      DBSessionFactory.closeSession(session); // Close session
     }
   }
 
@@ -30,7 +32,7 @@ public class CategoryDao {
   public Optional<CategoryEntity> getByName(String name) { // Get category by name
     Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get(); // Get session
+      session = DBSessionFactory.getSession(); // Get session
       if (session != null) { // Check if session is not null
         return session // Return session
             .createQuery(
@@ -42,14 +44,14 @@ public class CategoryDao {
         return Optional.empty(); // Return empty optional
       }
     } finally {
-      DatabaseSession.close(session); // Close session
+      DBSessionFactory.closeSession(session); // Close session
     }
   }
 
   public List<CategoryEntity> getAll() { // Get all categories
     Session session = null; // Initialize session
     try {
-      session = DatabaseSession.get(); // Get session
+      session = DBSessionFactory.getSession(); // Get session
       if (session != null) { // Check if session is not null
         return session
             .createQuery("from CategoryEntity", CategoryEntity.class)
@@ -59,7 +61,7 @@ public class CategoryDao {
         return null; // or return an empty list
       }
     } finally {
-      DatabaseSession.close(session); // Close session
+      DBSessionFactory.closeSession(session); // Close session
     }
   }
 }
