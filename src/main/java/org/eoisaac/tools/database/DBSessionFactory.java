@@ -12,12 +12,12 @@ import org.hibernate.cfg.Configuration;
  * */
 
 public class DBSessionFactory {
-  private static final SessionFactory sessionFactory = buildSessionFactory();
+  private static final SessionFactory sessionFactory = buildSessionFactory(); // Creates the session factory
 
-  public static SessionFactory buildSessionFactory() {
+  public static SessionFactory buildSessionFactory() { // Creates the session factory
     try {
-      Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-      return configuration.buildSessionFactory();
+      Configuration configuration = new Configuration().configure("hibernate.cfg.xml"); // Get the configuration from the hibernate.cfg.xml file
+      return configuration.buildSessionFactory(); // Builds the session factory
     } catch (Throwable e) {
       System.err.println("Initial SessionFactory creation failed: " + e);
       throw new ExceptionInInitializerError(e);
@@ -26,11 +26,11 @@ public class DBSessionFactory {
 
   public static Session getSession() {
     return sessionFactory.openSession();
-  }
+  } // Gets the database session
 
-  public static void closeSession(Session session) {
-    if (session != null && session.isOpen()) {
-      session.close();
+  public static void closeSession(Session session) { // Closes the database session
+    if (session != null && session.isOpen()) { // Checks if the session is not null and is open
+      session.close(); // Closes the session
     }
   }
 
