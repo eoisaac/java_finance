@@ -15,19 +15,23 @@ import org.hibernate.annotations.*;
 @NoArgsConstructor // Automatically generates no-args constructor
 @AllArgsConstructor // Automatically generates all-args constructor
 public class BaseEntity {
-  @Id @GeneratedValue @UuidGenerator private UUID id; // Automatically generates a UUID as the primary key
+  @Id @GeneratedValue @UuidGenerator
+  private UUID id; // Automatically generates a UUID as the primary key
 
   @Column( // Automatically generates a column for this field
       name = "created_at", // Sets the name of the column
       nullable = false, // Sets the column to not allow null values
       updatable = false, // Sets the column to not be updatable
-      columnDefinition = "TIMESTAMP WITH TIME ZONE") // Sets the column to be a timestamp with time zone
-  @CreationTimestamp  // Automatically generates a timestamp when the entity is created
+      columnDefinition =
+          "TIMESTAMP WITH TIME ZONE") // Sets the column to be a timestamp with time zone
+  @CreationTimestamp // Automatically generates a timestamp when the entity is created
   private Instant createdAt;
 
-  @Column(name = "updated_at", // Sets the name of the column
-          nullable = false,  // Sets the column to not allow null values
-          columnDefinition = "TIMESTAMP WITH TIME ZONE") // Sets the column to be a timestamp with time zone
+  @Column(
+      name = "updated_at", // Sets the name of the column
+      nullable = false, // Sets the column to not allow null values
+      columnDefinition =
+          "TIMESTAMP WITH TIME ZONE") // Sets the column to be a timestamp with time zone
   @UpdateTimestamp // Automatically generates a timestamp when the entity is updated
-  private Instant updatedAt; 
+  private Instant updatedAt;
 }

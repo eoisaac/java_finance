@@ -18,8 +18,8 @@
         <property name="hibernate.hbm2ddl.auto">create</property>
 
         <!-- Echo all executed SQL to stdout -->
-        <!--        <property name="hibernate.show_sql">true</property>-->
-        <!--        <property name="hibernate.format_sql">true</property>-->
+        <!-- <property name="hibernate.show_sql">true</property> -->
+        <!-- <property name="hibernate.format_sql">true</property> -->
 
         <!-- Populate database with initial data on startup -->
         <!-- Replace this line with your H2-specific data script if needed -->

@@ -12,11 +12,15 @@ import org.hibernate.cfg.Configuration;
  * */
 
 public class DBSessionFactory {
-  private static final SessionFactory sessionFactory = buildSessionFactory(); // Creates the session factory
+  private static final SessionFactory sessionFactory =
+      buildSessionFactory(); // Creates the session factory
 
   public static SessionFactory buildSessionFactory() { // Creates the session factory
     try {
-      Configuration configuration = new Configuration().configure("hibernate.cfg.xml"); // Get the configuration from the hibernate.cfg.xml file
+      Configuration configuration =
+          new Configuration()
+              .configure(
+                  "hibernate.cfg.xml"); // Get the configuration from the hibernate.cfg.xml file
       return configuration.buildSessionFactory(); // Builds the session factory
     } catch (Throwable e) {
       System.err.println("Initial SessionFactory creation failed: " + e);
@@ -33,5 +37,4 @@ public class DBSessionFactory {
       session.close(); // Closes the session
     }
   }
-
 }

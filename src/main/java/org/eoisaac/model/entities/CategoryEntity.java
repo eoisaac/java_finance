@@ -12,8 +12,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor // Automatically generates all-args constructor
 @NoArgsConstructor // Automatically generates no-args constructor
 public class CategoryEntity extends BaseEntity { // Extends the BaseEntity class
-  @Column(name = "name", // Sets the name of the column
-          unique = true,  // Sets the column to be unique
-          nullable = false) // Sets the column to not allow null values
+  @Column(
+      name = "name", // Sets the name of the column
+      unique = true, // Sets the column to be unique
+      nullable = false) // Sets the column to not allow null values
   private String name;
 }

@@ -6,15 +6,14 @@ import org.eoisaac.model.dao.CategoryDao;
 import org.eoisaac.model.entities.CategoryEntity;
 
 /*
-* That class is responsible for controlling the category DAO.
-* */
+ * That class is responsible for controlling the category DAO.
+ * */
 
 public class CategoryController {
 
   CategoryDao categoryDao; // Category DAO
 
   public CategoryController() { // Constructor
-
     categoryDao = new CategoryDao(); // Initialize category DAO
   }
 

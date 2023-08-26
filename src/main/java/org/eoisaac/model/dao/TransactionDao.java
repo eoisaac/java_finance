@@ -69,8 +69,8 @@ public class TransactionDao {
     try (Session session = DBSessionFactory.getSession()) { // Get session using try-with-resources
       if (session != null) { // Check if session is not null
         return session
-                .createQuery("from TransactionEntity", TransactionEntity.class)
-                .list(); // Return list of transactions
+            .createQuery("from TransactionEntity", TransactionEntity.class)
+            .list(); // Return list of transactions
       } else {
         System.out.println("Session not created");
         return null; // Return null

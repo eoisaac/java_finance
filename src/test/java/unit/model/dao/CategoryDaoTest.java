@@ -20,19 +20,18 @@ public class CategoryDaoTest {
     assertTrue(category.isPresent());
     assertEquals("Category name should be OUTROS", DEFAULT_CATEGORY_NAME, category.get().getName());
   }
-  
-  
+
   @Test
   public void getAllCategories() {
     List<CategoryEntity> categories = categoryDao.getAll();
 
     assertNotNull("Categories should not be null", categories);
     assertFalse("Categories should not be empty", categories.isEmpty());
-    
+
     int TOTAL_DB_CATEGORIES = 8; // Based in the resources/data/seed.sql file
     assertEquals("Categories size should be 8", TOTAL_DB_CATEGORIES, categories.size());
   }
-  
+
   @Test
   public void createCategory() {
     String NEW_CATEGORY_NAME = "TESTING";
@@ -41,7 +40,7 @@ public class CategoryDaoTest {
     Optional<CategoryEntity> createdCategory = categoryDao.create(newCategory);
 
     assertTrue(createdCategory.isPresent());
-    assertEquals("Category name should be TESTING", NEW_CATEGORY_NAME, createdCategory.get().getName());
+    assertEquals(
+        "Category name should be TESTING", NEW_CATEGORY_NAME, createdCategory.get().getName());
   }
-
 }
