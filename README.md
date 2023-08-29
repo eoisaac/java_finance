@@ -1,4 +1,4 @@
-# java_finance
+# Java Finance
 
 The project requirements are in `./docs/requirements.pdf`
 
@@ -10,16 +10,18 @@ The project requirements are in `./docs/requirements.pdf`
 
 ## How to run
 
-- Install the maven dependencies
-
-    ```bash
-    mvn install
-    ```
-
 - Start the database
 
     ```bash
     docker-compose up --build
+    ```
+
+### With Maven
+
+- Install the maven dependencies
+
+    ```bash
+    mvn install
     ```
 
 - Run the application
@@ -28,10 +30,16 @@ The project requirements are in `./docs/requirements.pdf`
     mvn clean compile exec:java -Dexec.mainClass="org.eoisaac.Main"
     ```
 
+### With Maven wrapper
 
+- Install the maven dependencies
 
+    ```bash
+    ./mvnw install
+    ```
 
+- Run the application
 
-
-
-
+    ```bash
+    ./mvnw clean compile exec:java -Dexec.mainClass="org.eoisaac.Main"
+    ```
