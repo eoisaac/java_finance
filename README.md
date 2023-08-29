@@ -5,12 +5,12 @@ The project requirements are in `./docs/requirements.pdf`
 ## Requirements
 
 - Java 8
-- Maven 3.6.3
+- Maven 4.0.0
 - Docker Compose version v2.20.2
 
 ## How to run
 
-- Install the dependencies
+- Install the maven dependencies
 
     ```bash
     mvn install
@@ -19,19 +19,15 @@ The project requirements are in `./docs/requirements.pdf`
 - Start the database
 
     ```bash
-    docker-compose up -d
+    docker-compose up --build
     ```
 
 - Run the application
 
     ```bash
-    mvn run
+    mvn clean compile exec:java -Dexec.mainClass="org.eoisaac.Main"
     ```
-  or
-    ```bash
-    mvn package
-    java -jar target/java_finance-1.0-SNAPSHOT.jar
-    ```
+
 
 
 
